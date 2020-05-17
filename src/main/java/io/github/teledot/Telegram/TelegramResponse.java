@@ -1,4 +1,4 @@
-package io.github.teledot;
+package io.github.teledot.Telegram;
 
 /*
 {
