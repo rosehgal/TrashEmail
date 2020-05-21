@@ -1,7 +1,6 @@
 package io.github.teledot.EmailInteraction;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -12,7 +11,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import io.github.teledot.Configurations.EmailServerConfiguration;
-import io.github.teledot.Respositories.UserRepository;
 import io.github.teledot.models.User;
 
 
@@ -52,4 +50,7 @@ public class EmailServerInteraction {
 	public Object fetchEmail(String emailId) {
 		return null;
 	}
+
+    public static class GetEmailsAndSendTelegramMessages {
+    }
 }
