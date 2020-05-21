@@ -7,6 +7,10 @@ mvnw.cmd
 *.swp
 ### Ignore application.yml properties
 **/*.yml
+AppDB.mv.db
+lib/
+*/application.properties
+src/main/resources/application.properties
 
 ### STS ###
 .apt_generated
