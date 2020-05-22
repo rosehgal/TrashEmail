@@ -7,7 +7,7 @@ mvnw.cmd
 *.swp
 ### Ignore application.yml properties
 **/*.yml
-AppDB.mv.db
+*.db
 lib/
 */application.properties
 src/main/resources/application.properties
