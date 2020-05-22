@@ -22,7 +22,6 @@ public class EmailServerInteraction {
 
 	
 	public String createEmailId(User user) throws HttpClientErrorException {
-		// TODO create user model here and check if email id exists or not
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setBasicAuth(
@@ -31,26 +30,19 @@ public class EmailServerInteraction {
 		);
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-		MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
+		MultiValueMap<String, String> data = new LinkedMultiValueMap<String, String>();
 		
-		map.add("email", user.getEmailId());
-		map.add("password", user.getPassword());
+		data.add("address", user.getEmailId());
+		data.add("forwards_to", emailServerConfig.getEmailServerTargetAlias());
 		
-		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(data, headers);
 		
 		RestTemplate restTemplate = new RestTemplate();
 		String response = restTemplate.postForEntity(
-			emailServerConfig.getEmailServerApiURL(), 
+			emailServerConfig.getEmailServerApiAliasesUrl(),
 			request, 
 			String.class).getBody();
 		
 		return response;
 	}
-	
-	public Object fetchEmail(String emailId) {
-		return null;
-	}
-
-    public static class GetEmailsAndSendTelegramMessages {
-    }
 }

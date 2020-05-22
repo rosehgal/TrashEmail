@@ -12,8 +12,19 @@ public class EmailServerConfiguration {
 	@Value("${emailServer.admin.password}")
 	private String adminPassword;
 	
-	@Value("${emailServer.apiUrl}")
-	private String emailServerApiURL;
+	@Value("${emailServer.api.aliases.url}")
+	private String emailServerApiAliasesUrl;
+
+	@Value("${emailServer.aliases.target}")
+	private String emailServerTargetAlias;
+
+	public String getEmailServerTargetAlias() {
+		return emailServerTargetAlias;
+	}
+
+	public void setEmailServerTargetAlias(String emailServerTargetAlias) {
+		this.emailServerTargetAlias = emailServerTargetAlias;
+	}
 
 	public String getAdminemail() {
 		return adminemail;
@@ -23,8 +34,12 @@ public class EmailServerConfiguration {
 		return adminPassword;
 	}
 
-	public String getEmailServerApiURL() {
-		return emailServerApiURL;
+	public String getEmailServerApiAliasesUrl() {
+		return emailServerApiAliasesUrl;
+	}
+
+	public void setEmailServerApiAliasesUrl(String emailServerApiAliasesUrl) {
+		this.emailServerApiAliasesUrl = emailServerApiAliasesUrl;
 	}
 
 	public void setAdminemail(String adminemail) {
@@ -34,9 +49,4 @@ public class EmailServerConfiguration {
 	public void setAdminPassword(String adminPassword) {
 		this.adminPassword = adminPassword;
 	}
-
-	public void setEmailServerApiURL(String emailServerApiURL) {
-		this.emailServerApiURL = emailServerApiURL;
-	}
-		
 }	

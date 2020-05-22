@@ -28,12 +28,11 @@ public class SimpleMessageListenerImpl implements SimpleMessageListener {
         Session session = Session.getDefaultInstance(new Properties());
         MimeMessage m = null;
         try {
-
             m = new MimeMessage(session, data);
             MimeMessageParser parser = new MimeMessageParser(m);
-            parser.parse();
             String htmlContent = parser.getHtmlContent();
-            log.info(htmlContent);
+            log.info("Printing Data to console");
+            log.info(parser.getFrom());
 
         } catch (MessagingException e) {
             e.printStackTrace();
