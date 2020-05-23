@@ -33,6 +33,17 @@ public class EmailServerConfiguration {
 	@Value("${emailServer.imap.host}")
 	private String emailServerImapHost;
 
+	@Value("${emailServer.host}")
+	private String emailServerhost;
+
+	public String getEmailServerhost() {
+		return emailServerhost;
+	}
+
+	public void setEmailServerhost(String emailServerhost) {
+		this.emailServerhost = emailServerhost;
+	}
+
 	public String getEmailServerImapHost() {
 		return emailServerImapHost;
 	}

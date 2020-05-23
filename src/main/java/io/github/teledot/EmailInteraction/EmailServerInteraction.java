@@ -1,9 +1,7 @@
 package io.github.teledot.EmailInteraction;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -38,11 +36,22 @@ public class EmailServerInteraction {
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(data, headers);
 		
 		RestTemplate restTemplate = new RestTemplate();
-		String response = restTemplate.postForEntity(
+		ResponseEntity response = restTemplate.postForEntity(
 			emailServerConfig.getEmailServerApiAliasesUrl(),
 			request, 
-			String.class).getBody();
-		
-		return response;
+			String.class);
+
+		if(response.getStatusCode() == HttpStatus.OK){
+			return "Email ID : *"+user.getEmailId()+"*"+
+					"successfully Created :)";
+		}
+
+		if(response.getStatusCode() == HttpStatus.BAD_REQUEST &&
+				((String)response.getBody()).contains("Alias already exists")){
+			return "Email ID : *"+user.getEmailId()+"*"+
+					"already taken :)";
+		}
+
+		return response.getBody().toString();
 	}
 }

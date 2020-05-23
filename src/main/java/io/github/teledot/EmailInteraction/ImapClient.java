@@ -3,6 +3,7 @@ package io.github.teledot.EmailInteraction;
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.imap.IMAPStore;
 import io.github.teledot.Configurations.EmailServerConfiguration;
+import io.github.teledot.Telegram.ForwardMailsToTelegram;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class ImapClient {
     @Autowired
     EmailServerConfiguration emailServerConfiguration;
 
+    @Autowired
+    ForwardMailsToTelegram forwardMailsToTelegram;
+
     private static final Logger log = LoggerFactory.getLogger(ImapClient.class);
 
     private static String username ;
@@ -34,7 +38,7 @@ public class ImapClient {
         password = emailServerConfiguration.getEmailServerTargetAliasPassword();
     }
 
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 120000)
     public void fetchNewEmails() throws Exception {
         Properties properties = new Properties();
         properties.put("mail.store.protocol", "imaps");
@@ -63,9 +67,10 @@ public class ImapClient {
                     Message[] messages = event.getMessages();
 
                     for (Message message : messages) {
+                        // TODO Message handler
                         try {
-                            // TODO Message handler
-                            System.out.println("Mail Subject:- " + message.getSubject());
+                            log.debug(message.getSubject());
+                            forwardMailsToTelegram.sendToTelegram(message);
                         } catch (MessagingException e) {
                             e.printStackTrace();
                         }
@@ -108,7 +113,7 @@ public class ImapClient {
 
                 try {
                     ensureOpen(folder);
-                    System.out.println("enter idle");
+                    log.info("IMAP client entering into IDLE Listening state ...");
                     ((IMAPFolder) folder).idle();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -154,7 +159,7 @@ public class ImapClient {
         }
 
         if (folder.exists() && !folder.isOpen() && (folder.getType() & Folder.HOLDS_MESSAGES) != 0) {
-            System.out.println("open folder " + folder.getFullName());
+            log.info("Opening folder " + folder.getFullName());
             folder.open(Folder.READ_ONLY);
             if (!folder.isOpen())
                 throw new MessagingException("Unable to open folder " + folder.getFullName());
