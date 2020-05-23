@@ -1,6 +1,9 @@
 package io.github.teledot.models;
 
 
+import io.github.teledot.Configurations.EmailServerConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.Random;
 
 import javax.persistence.Column;
@@ -12,30 +15,22 @@ import javax.persistence.Table;
 @Entity
 @Table(name="UserEmailToChatIdMapping")
 public class User {
-	
 	@Id
 	@GeneratedValue
 	private Integer id;
 	private Integer chatId;
+
 	@Column(unique = true)
 	private String emailId;
-	private String password;
+
+	private String forwardsTo;
 	
 	public User() {}
 	
-	public User(Integer chatId, String emailId) {
+	public User(Integer chatId, String emailId, String forwardsTo) {
 		this.chatId = chatId;
 		this.emailId = emailId;
-		
-		int leftLimit = 97; // letter 'a'
-	    int rightLimit = 122; // letter 'z'
-	    int targetStringLength = 20;
-	    Random random = new Random();
-	 
-	    this.password = random.ints(leftLimit, rightLimit + 1)
-	      .limit(targetStringLength)
-	      .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-	      .toString();
+		this.forwardsTo = forwardsTo;
 	}
 	
 	public Integer getId() {
@@ -56,10 +51,12 @@ public class User {
 	public void setEmailId(String emailId) {
 		this.emailId = emailId;
 	}
-	public String getPassword() {
-		return password;
+
+	public String getForwardsTo() {
+		return forwardsTo;
 	}
-	public void setPassword(String password) {
-		this.password = password;
+
+	public void setForwardsTo(String forwardsTo) {
+		this.forwardsTo = forwardsTo;
 	}
 }

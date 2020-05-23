@@ -18,6 +18,61 @@ public class EmailServerConfiguration {
 	@Value("${emailServer.aliases.target}")
 	private String emailServerTargetAlias;
 
+	@Value("${emailServer.aliases.target.password}")
+	private String emailServerTargetAliasPassword;
+
+	@Value("${emailServer.pop3.host}")
+	private String emailServerPop3Host;
+
+	@Value("${emailServer.pop3.port}")
+	private int emailServerPop3Port;
+
+	@Value("${emailServer.imap.port}")
+	private String emailServerImapPort;
+
+	@Value("${emailServer.imap.host}")
+	private String emailServerImapHost;
+
+	public String getEmailServerImapHost() {
+		return emailServerImapHost;
+	}
+
+	public void setEmailServerImapHost(String emailServerImapHost) {
+		this.emailServerImapHost = emailServerImapHost;
+	}
+
+	public String getEmailServerImapPort() {
+		return emailServerImapPort;
+	}
+
+	public void setEmailServerImapPort(String emailServerImapPort) {
+		this.emailServerImapPort = emailServerImapPort;
+	}
+
+	public String getEmailServerPop3Host() {
+		return emailServerPop3Host;
+	}
+
+	public void setEmailServerPop3Host(String emailServerPop3Host) {
+		this.emailServerPop3Host = emailServerPop3Host;
+	}
+
+	public int getEmailServerPop3Port() {
+		return emailServerPop3Port;
+	}
+
+	public void setEmailServerPop3Port(int emailServerPop3Port) {
+		this.emailServerPop3Port = emailServerPop3Port;
+	}
+
+	public String getEmailServerTargetAliasPassword() {
+		return emailServerTargetAliasPassword;
+	}
+
+	public void setEmailServerTargetAliasPassword(String emailServerTargetAliasPassword) {
+		this.emailServerTargetAliasPassword = emailServerTargetAliasPassword;
+	}
+
 	public String getEmailServerTargetAlias() {
 		return emailServerTargetAlias;
 	}

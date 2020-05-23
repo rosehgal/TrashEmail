@@ -3,6 +3,7 @@ package io.github.teledot.Telegram;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.github.teledot.Configurations.EmailServerConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
@@ -18,6 +19,8 @@ public class TelegramRequestHandler {
 	private EmailServerInteraction emailServerInteraction;
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private EmailServerConfiguration emailServerConfiguration;
 	
 	public String createEmailHandler(User user) throws HttpClientErrorException {
 		return emailServerInteraction.createEmailId(user); 
@@ -46,7 +49,7 @@ public class TelegramRequestHandler {
 				if(userRepository.findByEmailId(emailId).size()==1)
 					return "Email id is taken, please choose something else";
 				
-				User user = new User(chatId, emailId);
+				User user = new User(chatId, emailId, emailServerConfiguration.getEmailServerTargetAlias());
 				userRepository.save(user);
 				
 				return this.createEmailHandler(user);
