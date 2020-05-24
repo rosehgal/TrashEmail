@@ -17,15 +17,13 @@ import org.springframework.web.client.RestTemplate;
 public class SendTelegramMessage {
     @Autowired
     private TelegramConfg telegramConfg;
-    @Autowired
-    private UserRepository userRepository;
 
     private static final Logger log = LoggerFactory.getLogger(SendTelegramMessage.class);
 
     public void sendMessage(String message, String chatId){
-        String telegramURI = "https://api.telegram.org/bot"+
-                            telegramConfg.getBotToken()+
-                            "/sendMessage";
+        String telegramURI = telegramConfg.getUrl() +
+                             telegramConfg.getBotToken() +
+                             "/sendMessage";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -43,7 +41,7 @@ public class SendTelegramMessage {
                 String.class);
 
         if(response.getStatusCode() == HttpStatus.OK){
-            log.info("Message sent to user");
+            log.info("Message sent to user: " + chatId);
         }
 
     }
