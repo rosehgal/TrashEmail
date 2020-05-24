@@ -36,9 +36,9 @@ public class TelegramRequestHandler {
 		Boolean isDeleted = emailServerInteraction.deleteEmailId(user);
 		if(isDeleted){
 			userRepository.delete(user);
-			return "Email Id deleted and added to open pool.";
+			return "Email Id *deleted* and added to open pool.";
 		}
-		return "No mail ID on the server was identified with " +
+		return "No mail ID on the server was identified with" +
 				user.getEmailId();
 	}
 
@@ -80,7 +80,7 @@ public class TelegramRequestHandler {
 						String emailId = argument;
 						if(userRepository.existsByEmailId(emailId)){
 							// Email ID Already taken
-							return "Email ID " + argument + "" +
+							return "Email ID *" + argument + "*" +
 									"is already taken, please get some other";
 						}
 
@@ -98,11 +98,12 @@ public class TelegramRequestHandler {
 			case "/help":
 				break;
 			case "/emailIds":
-				String response = "Currently, you have below mentioned emails with you.\n";
+				String response = "Currently, you have below mentioned emails with you.\n*";
 				List<User> allEmailsWithUser = userRepository.findByChatId(chatId);
 				for(User emailWithUser: allEmailsWithUser){
 					response += emailWithUser + "\n";
 				}
+				response+="*";
 				return response;
 
 			case "/delete":
@@ -125,7 +126,7 @@ public class TelegramRequestHandler {
 						}
 					}
 					else{
-						return "Email not registered to any user ..";
+						return "*Email not registered to any user ..*";
 					}
 
 				}

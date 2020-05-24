@@ -12,17 +12,28 @@ public class TelegramResponse {
     private String method;
     private Integer chat_id;
     private String text;
+    private String parse_mode;
 
     public TelegramResponse(String method, Integer chat_id, String text) {
         this.method = method;
         this.chat_id = chat_id;
         this.text = text;
+        this.parse_mode = "Markdown";
     }
 
     public TelegramResponse(Integer chat_id, String text) {
         this.method = "sendMessage";
         this.chat_id = chat_id;
         this.text = text;
+        this.parse_mode = "Markdown";
+    }
+
+    public String getParse_mode() {
+        return parse_mode;
+    }
+
+    public void setParse_mode(String parse_mode) {
+        this.parse_mode = parse_mode;
     }
 
     public String getMethod() {
