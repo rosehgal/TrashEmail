@@ -12,5 +12,5 @@ public interface UserRepository extends CrudRepository<User, Integer>{
 	public List<User> findByChatId(Integer chatId);
 	public User findByEmailId(String emailId);
 	public boolean existsByEmailId(String emailId);
-	public void deleteUserByEmailId(String emailId);
+	public void delete(User user);
 }

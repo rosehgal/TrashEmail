@@ -59,4 +59,9 @@ public class User {
 	public void setForwardsTo(String forwardsTo) {
 		this.forwardsTo = forwardsTo;
 	}
+
+	@Override
+	public java.lang.String toString() {
+		return this.emailId;
+	}
 }

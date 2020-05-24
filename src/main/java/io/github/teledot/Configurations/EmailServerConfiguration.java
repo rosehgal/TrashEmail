@@ -36,6 +36,17 @@ public class EmailServerConfiguration {
 	@Value("${emailServer.host}")
 	private String emailServerhost;
 
+	@Value("${emailServer.api.aliases.remove.url}")
+	private String emailServerApiRemoveAliasUrl;
+
+	public String getEmailServerApiRemoveAliasUrl() {
+		return emailServerApiRemoveAliasUrl;
+	}
+
+	public void setEmailServerApiRemoveAliasUrl(String emailServerApiRemoveAliasUrl) {
+		this.emailServerApiRemoveAliasUrl = emailServerApiRemoveAliasUrl;
+	}
+
 	public String getEmailServerhost() {
 		return emailServerhost;
 	}
@@ -115,4 +126,4 @@ public class EmailServerConfiguration {
 	public void setAdminPassword(String adminPassword) {
 		this.adminPassword = adminPassword;
 	}
-}	
+}
