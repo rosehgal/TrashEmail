@@ -31,6 +31,7 @@ public class SendTelegramMessage {
         MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
         data.add("chat_id", chatId);
         data.add("text", message);
+        data.add("parse_mode", "Markdown");
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(data, headers);
 

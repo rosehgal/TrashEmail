@@ -80,7 +80,7 @@ public class TelegramRequestHandler {
 						String emailId = argument;
 						if(userRepository.existsByEmailId(emailId)){
 							// Email ID Already taken
-							return "Email ID *" + argument + "*" +
+							return "Email ID *" + argument + "* " +
 									"is already taken, please get some other";
 						}
 

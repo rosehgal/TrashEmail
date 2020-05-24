@@ -3,6 +3,7 @@ package io.github.teledot.Telegram;
 import io.github.teledot.EmailInteraction.ImapClient;
 import io.github.teledot.Respositories.UserRepository;
 import io.github.teledot.models.User;
+import io.github.teledot.utils.MailParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import java.io.IOException;
 
 @Component
 public class ForwardMailsToTelegram {
@@ -20,12 +22,12 @@ public class ForwardMailsToTelegram {
 
     private static final Logger log = LoggerFactory.getLogger(ForwardMailsToTelegram.class);
 
-    public void sendToTelegram(Message message) throws MessagingException {
+    public void sendToTelegram(Message message) throws MessagingException, IOException {
         String emailFor = message.getAllRecipients()[0].toString();
         log.debug("Got Message for "+ emailFor);
         User user = userRepository.findByEmailId(emailFor);
-        String data = message.getSubject() + "\n" + message.getFrom()[0].toString();
+        MailParser parsedMail = new MailParser(message);
 
-        sendTelegramMessage.sendMessage(data, Integer.toString(user.getChatId()));
+        sendTelegramMessage.sendMessage(parsedMail.toString(), Integer.toString(user.getChatId()));
     }
 }

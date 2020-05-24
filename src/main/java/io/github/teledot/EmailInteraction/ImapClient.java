@@ -15,6 +15,7 @@ import javax.annotation.PostConstruct;
 import javax.mail.*;
 import javax.mail.event.MessageCountAdapter;
 import javax.mail.event.MessageCountEvent;
+import java.io.IOException;
 import java.util.Properties;
 
 @Component
@@ -71,7 +72,7 @@ public class ImapClient {
                         try {
                             log.debug(message.getSubject());
                             forwardMailsToTelegram.sendToTelegram(message);
-                        } catch (MessagingException e) {
+                        } catch (MessagingException | IOException e) {
                             e.printStackTrace();
                         }
                     }
