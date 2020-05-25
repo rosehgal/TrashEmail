@@ -23,7 +23,6 @@ public class ForwardMailsToTelegram {
 
     public void sendToTelegram(Message message) throws MessagingException, IOException {
         String emailFor = message.getAllRecipients()[0].toString();
-        log.debug("Got Message for "+ emailFor);
         User user = userRepository.findByEmailId(emailFor);
         MailParser parsedMail = new MailParser(message);
 

@@ -4,15 +4,16 @@ import javax.mail.Address;
 import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.internet.ContentType;
 import javax.mail.internet.MimeMultipart;
 import java.io.IOException;
+import java.util.Date;
 
 public class MailParser {
     private String to;
     private String from;
     private String subject;
     private String content;
+    private Date date;
 
     public MailParser(Message message) throws MessagingException, IOException {
         this.content="";
@@ -27,20 +28,23 @@ public class MailParser {
 
         this.subject = message.getSubject();
         this.content = this.getTextFromMessage(message);
+        this.date    = message.getSentDate();
 
     }
 
     @Override
     public String toString() {
         String mailData = String.format("" +
-                "*------------------------------------------------*\n" +
-                "*To* : %s\n" +
-                "*From* : %s\n" +
-                "*Subject* : *%s*\n" +
-                "*------------------------------------------------*\n" +
+                "To : %s\n" +
+                "From : %s\n" +
+                "Date : %s\n" +
+                "=========================================\n" +
+                "Subject : %s\n" +
+                "=========================================\n\n" +
                 "%s",
                 this.to,
                 this.from,
+                this.date,
                 this.subject,
                 this.content
         );

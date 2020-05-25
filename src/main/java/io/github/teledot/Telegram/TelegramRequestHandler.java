@@ -54,12 +54,20 @@ public class TelegramRequestHandler {
 		if(strings.length >= 2)
 			argument = strings[1];
 
-		log.debug(command);
-		log.debug(argument);
-
 		switch(command){
 			case "/start":
-				return "Thanks for joining ...";
+				return "Thanks for joining ...\n" +
+						"I am a disposable bot email id generator that can:\n" +
+						"1. Quickly generate a disposable email for you, no email management hassle \uD83D\uDE0B\t\n" +
+						"2. Quickly delete those emailIds\n" +
+						"3. Since I own, trashemail.in your emailId will belong this domain" +
+						"4. I dont read anything, I respect your privacy. Any doubt? Audit my source code." +
+						"\n" +
+						"I am still a baby and learning.\n" +
+						"Do you have idea for addon? Please feel free to reach @ https://github.com/r0hi7/Trashemail" +
+						"and raise an issue. I will definitely work out on that" +
+						"";
+
 			case "/create":
 				if(userRepository.findByChatId(chatId).size()>=2)
 					return "Only Two email Ids are allowed per-user\n" +
@@ -71,7 +79,6 @@ public class TelegramRequestHandler {
 							emailServerConfiguration.getEmailServerhost()+
 							"$";
 
-					log.debug(emailRegex);
 					Pattern pattern = Pattern.compile(emailRegex);
 					Matcher matcher = pattern.matcher(argument);
 
@@ -91,12 +98,21 @@ public class TelegramRequestHandler {
 						return this.createEmail(user);
 					}
 					else{
-						return "Email id should be of the form: *@"+
-								emailServerConfiguration.getEmailServerhost();
+						return "Email id should be of the form: `*@"+
+								emailServerConfiguration.getEmailServerhost()+"`";
 					}
 				}
 			case "/help":
-				break;
+				return "Create disposable email addresses to protect you against spam and newsletters." +
+						"E-Mail forwarding made easy.\n" +
+						"I am open source and runs on open source services." +
+						"You can find my heart, soul and brain at: https://github.com/r0hi7/Trashemail\n\n"+
+						"Currently, I support:\n" +
+						"/create - That can get you one(or two) custom disposable emails.\n" +
+						"/delete - If you are getting spams for any mail id, just delete it because it is disposable.\n" +
+						"/emailIds - Get the list of all the emailIds that belongs to you.\n" +
+						"/help - this help message.\n";
+
 			case "/emailIds":
 				String response = "Currently, you have below mentioned emails with you.\n*";
 				List<User> allEmailsWithUser = userRepository.findByChatId(chatId);
@@ -111,7 +127,6 @@ public class TelegramRequestHandler {
 						emailServerConfiguration.getEmailServerhost()+
 						"$";
 
-				log.debug(emailRegex);
 				Pattern pattern = Pattern.compile(emailRegex);
 				Matcher matcher = pattern.matcher(argument);
 
@@ -131,12 +146,18 @@ public class TelegramRequestHandler {
 
 				}
 				else{
-					return "Email id should be of the form: *@"+
-							emailServerConfiguration.getEmailServerhost();
+					return "Email id should be of the form: `*@"+
+							emailServerConfiguration.getEmailServerhost()+'`';
 				}
 				break;
+
 			default:
-				return "I dont understand that ...";
+				return "I dont understand that ...\n, " +
+						"I only understand few commands.\n" +
+						"/create <something>@trashemail.in\n" +
+						"/delete <something>@trashemail.in\n" +
+						"/emailIds\n" +
+						"/help\n";
 		}
 
 		return null;

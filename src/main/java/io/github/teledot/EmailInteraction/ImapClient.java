@@ -77,7 +77,6 @@ public class ImapClient {
 
                     for (Message message : messages) {
                         try {
-                            log.debug(message.getSubject());
                             forwardMailsToTelegram.sendToTelegram(message);
                         } catch (MessagingException | IOException e) {
                             e.printStackTrace();
@@ -118,7 +117,6 @@ public class ImapClient {
         @Override
         public void run() {
             while (running) {
-
                 try {
                     ensureOpen(folder);
                     log.info("IMAP client entering into IDLE Listening state ...");
