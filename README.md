@@ -1,4 +1,5 @@
 # TrashEmail 
+[![Build Status](https://travis-ci.org/r0hi7/Trashemail.svg?branch=master)](https://travis-ci.org/r0hi7/Trashemail)
 
 TrashEmail is Java spring-boot microservice to handle webhook requests made via Telegram. The beauty of this code is that it offers minimilistic dependencies, just download, build and run sort of setup.
 
