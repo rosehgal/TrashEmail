@@ -1,7 +1,6 @@
-package io.github.teledot.Configurations;
+package io.github.trashemail.Configurations;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 @Component("EmailServerConfig")

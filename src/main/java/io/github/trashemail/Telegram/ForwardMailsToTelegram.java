@@ -1,8 +1,8 @@
-package io.github.teledot.Telegram;
+package io.github.trashemail.Telegram;
 
-import io.github.teledot.Respositories.UserRepository;
-import io.github.teledot.models.User;
-import io.github.teledot.utils.MailParser;
+import io.github.trashemail.Respositories.UserRepository;
+import io.github.trashemail.models.User;
+import io.github.trashemail.utils.MailParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

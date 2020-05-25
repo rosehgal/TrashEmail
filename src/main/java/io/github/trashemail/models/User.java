@@ -1,10 +1,5 @@
-package io.github.teledot.models;
+package io.github.trashemail.models;
 
-
-import io.github.teledot.Configurations.EmailServerConfiguration;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Random;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

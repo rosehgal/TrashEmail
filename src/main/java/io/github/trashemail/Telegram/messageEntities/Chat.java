@@ -1,14 +1,13 @@
-package io.github.teledot.Telegram.messageEntities;
+package io.github.trashemail.Telegram.messageEntities;
 
-public class From {
+public class Chat {
 	private Integer id;
-	private boolean is_bot;
 	private String first_name;
 	private String last_name;
 	private String username;
-	private String language_code;
+	private String type;
 
-	public From() {
+	public Chat() {
 	}
 
 	public Integer getId() {
@@ -17,14 +16,6 @@ public class From {
 
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	public boolean isIs_bot() {
-		return is_bot;
-	}
-
-	public void setIs_bot(boolean is_bot) {
-		this.is_bot = is_bot;
 	}
 
 	public String getFirst_name() {
@@ -51,11 +42,11 @@ public class From {
 		this.username = username;
 	}
 
-	public String getLanguage_code() {
-		return language_code;
+	public String getType() {
+		return type;
 	}
 
-	public void setLanguage_code(String language_code) {
-		this.language_code = language_code;
+	public void setType(String type) {
+		this.type = type;
 	}
 }

@@ -1,22 +1,16 @@
-package io.github.teledot.EmailInteraction;
+package io.github.trashemail.EmailInteraction;
 
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.imap.IMAPStore;
-import io.github.teledot.Configurations.EmailServerConfiguration;
-import io.github.teledot.Telegram.ForwardMailsToTelegram;
+import io.github.trashemail.Configurations.EmailServerConfiguration;
+import io.github.trashemail.Telegram.ForwardMailsToTelegram;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.mail.*;

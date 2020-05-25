@@ -1,4 +1,4 @@
-package io.github.teledot.Telegram.messageEntities;
+package io.github.trashemail.Telegram.messageEntities;
 
 import java.util.Date;
 

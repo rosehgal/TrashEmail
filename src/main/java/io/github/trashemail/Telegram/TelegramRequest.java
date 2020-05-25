@@ -1,9 +1,9 @@
-package io.github.teledot.Telegram;
+package io.github.trashemail.Telegram;
 
 import java.util.Date;
 
-import io.github.teledot.Telegram.messageEntities.Chat;
-import io.github.teledot.Telegram.messageEntities.From;
+import io.github.trashemail.Telegram.messageEntities.Chat;
+import io.github.trashemail.Telegram.messageEntities.From;
 
 /* This is how a response looks like, which we are taking input as request
 {

@@ -1,4 +1,4 @@
-package io.github.teledot.utils;
+package io.github.trashemail.utils;
 
 import javax.mail.Address;
 import javax.mail.BodyPart;

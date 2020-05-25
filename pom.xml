@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>io.github</groupId>
-	<artifactId>teledot</artifactId>
+	<artifactId>trashemail</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>teledot</name>
-	<description>Demo project for Spring Boot</description>
+	<name>Trashemail</name>
+	<description>Sprinboot miscroservice heart of Telegram @trashemail_bot</description>
 
 	<properties>
 		<java.version>1.8</java.version>

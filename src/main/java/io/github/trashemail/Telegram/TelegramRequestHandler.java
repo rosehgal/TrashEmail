@@ -1,22 +1,19 @@
-package io.github.teledot.Telegram;
+package io.github.trashemail.Telegram;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import io.github.teledot.Configurations.EmailServerConfiguration;
-import io.github.teledot.EmailInteraction.ImapClient;
-import javassist.expr.Instanceof;
+import io.github.trashemail.Configurations.EmailServerConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
-import io.github.teledot.EmailInteraction.EmailServerInteraction;
-import io.github.teledot.Respositories.UserRepository;
-import io.github.teledot.models.User;
+import io.github.trashemail.EmailInteraction.EmailServerInteraction;
+import io.github.trashemail.Respositories.UserRepository;
+import io.github.trashemail.models.User;
 
 @Component
 public class TelegramRequestHandler {

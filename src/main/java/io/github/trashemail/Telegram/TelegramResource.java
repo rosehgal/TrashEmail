@@ -1,4 +1,4 @@
-package io.github.teledot.Telegram;
+package io.github.trashemail.Telegram;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;

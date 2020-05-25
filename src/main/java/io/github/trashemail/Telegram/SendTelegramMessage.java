@@ -1,6 +1,6 @@
-package io.github.teledot.Telegram;
+package io.github.trashemail.Telegram;
 
-import io.github.teledot.Configurations.TelegramConfg;
+import io.github.trashemail.Configurations.TelegramConfg;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

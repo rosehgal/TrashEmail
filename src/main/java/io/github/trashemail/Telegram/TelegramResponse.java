@@ -1,4 +1,4 @@
-package io.github.teledot.Telegram;
+package io.github.trashemail.Telegram;
 
 /*
 {

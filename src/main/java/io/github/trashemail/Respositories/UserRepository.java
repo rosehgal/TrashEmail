@@ -1,11 +1,11 @@
-package io.github.teledot.Respositories;
+package io.github.trashemail.Respositories;
 
 import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import io.github.teledot.models.User;
+import io.github.trashemail.models.User;
 
 @Repository
 public interface UserRepository extends CrudRepository<User, Integer>{

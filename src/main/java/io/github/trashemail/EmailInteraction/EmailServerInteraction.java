@@ -1,4 +1,4 @@
-package io.github.teledot.EmailInteraction;
+package io.github.trashemail.EmailInteraction;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -8,8 +8,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import io.github.teledot.Configurations.EmailServerConfiguration;
-import io.github.teledot.models.User;
+import io.github.trashemail.Configurations.EmailServerConfiguration;
+import io.github.trashemail.models.User;
 
 
 @Component("EmailServerInteraction")

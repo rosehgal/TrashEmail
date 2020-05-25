@@ -1,6 +1,6 @@
-package io.github.teledot;
+package io.github.trashemail;
 
-import io.github.teledot.EmailInteraction.ImapClient;
+import io.github.trashemail.EmailInteraction.ImapClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -12,13 +12,13 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 @SpringBootApplication
 @EnableAsync
-public class TeledotApplication implements CommandLineRunner {
+public class TrashemailApplication implements CommandLineRunner {
 
     @Autowired
     ImapClient imapClient;
 
     public static void main(String[] args) {
-        SpringApplication.run(TeledotApplication.class, args);
+        SpringApplication.run(TrashemailApplication.class, args);
     }
 
     @Bean("threadPoolTaskExecutor")
