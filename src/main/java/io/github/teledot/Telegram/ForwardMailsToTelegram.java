@@ -1,6 +1,5 @@
 package io.github.teledot.Telegram;
 
-import io.github.teledot.EmailInteraction.ImapClient;
 import io.github.teledot.Respositories.UserRepository;
 import io.github.teledot.models.User;
 import io.github.teledot.utils.MailParser;

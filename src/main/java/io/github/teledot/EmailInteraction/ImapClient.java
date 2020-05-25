@@ -7,9 +7,16 @@ import io.github.teledot.Telegram.ForwardMailsToTelegram;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.mail.*;
@@ -18,8 +25,9 @@ import javax.mail.event.MessageCountEvent;
 import java.io.IOException;
 import java.util.Properties;
 
+@Configuration
 @Component
-@EnableScheduling
+@EnableAsync
 public class ImapClient {
 
     @Autowired
@@ -39,7 +47,7 @@ public class ImapClient {
         password = emailServerConfiguration.getEmailServerTargetAliasPassword();
     }
 
-    @Scheduled(fixedRate = 120000)
+    @Async("threadPoolTaskExecutor")
     public void fetchNewEmails() throws Exception {
         Properties properties = new Properties();
         properties.put("mail.store.protocol", "imaps");
@@ -68,7 +76,6 @@ public class ImapClient {
                     Message[] messages = event.getMessages();
 
                     for (Message message : messages) {
-                        // TODO Message handler
                         try {
                             log.debug(message.getSubject());
                             forwardMailsToTelegram.sendToTelegram(message);
