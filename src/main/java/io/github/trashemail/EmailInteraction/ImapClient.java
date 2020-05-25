@@ -37,8 +37,8 @@ public class ImapClient {
 
     @PostConstruct
     public void init(){
-        username = emailServerConfiguration.getEmailServerTargetAlias();
-        password = emailServerConfiguration.getEmailServerTargetAliasPassword();
+        username = emailServerConfiguration.getEmailServerImapTaregtUsername();
+        password = emailServerConfiguration.getEmailServerImapTargetPassword();
     }
 
     @Async("threadPoolTaskExecutor")

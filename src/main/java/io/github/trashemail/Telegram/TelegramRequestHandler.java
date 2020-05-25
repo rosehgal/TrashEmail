@@ -57,12 +57,12 @@ public class TelegramRequestHandler {
 						"I am a disposable bot email id generator that can:\n" +
 						"1. Quickly generate a disposable email for you, no email management hassle \uD83D\uDE0B\t\n" +
 						"2. Quickly delete those emailIds\n" +
-						"3. Since I own, trashemail.in your emailId will belong this domain" +
+						"3. Since I own, trashemail.in your emailId will belong this domain\n" +
 						"4. I dont read anything, I respect your privacy. Any doubt? Audit my source code." +
 						"\n" +
 						"I am still a baby and learning.\n" +
 						"Do you have idea for addon? Please feel free to reach @ https://github.com/r0hi7/Trashemail" +
-						"and raise an issue. I will definitely work out on that" +
+						" and raise an issue. I will definitely work out on that" +
 						"";
 
 			case "/create":
@@ -90,7 +90,7 @@ public class TelegramRequestHandler {
 
 						User user = new User(chatId,
 								   			 emailId,
-											 emailServerConfiguration.getEmailServerTargetAlias());
+											 emailServerConfiguration.getEmailServerImapTaregtUsername());
 						userRepository.save(user);
 						return this.createEmail(user);
 					}

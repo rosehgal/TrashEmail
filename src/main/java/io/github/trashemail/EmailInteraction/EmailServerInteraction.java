@@ -31,13 +31,13 @@ public class EmailServerInteraction {
 		MultiValueMap<String, String> data = new LinkedMultiValueMap<String, String>();
 		
 		data.add("address", user.getEmailId());
-		data.add("forwards_to", emailServerConfig.getEmailServerTargetAlias());
+		data.add("forwards_to", emailServerConfig.getEmailServerImapTaregtUsername());
 		
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(data, headers);
 		
 		RestTemplate restTemplate = new RestTemplate();
 		ResponseEntity response = restTemplate.postForEntity(
-			emailServerConfig.getEmailServerApiAliasesUrl(),
+			emailServerConfig.getEmailServerApiAddAliasesUrl(),
 			request, 
 			String.class);
 

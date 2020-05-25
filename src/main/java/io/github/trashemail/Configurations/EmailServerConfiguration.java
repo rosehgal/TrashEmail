@@ -11,20 +11,14 @@ public class EmailServerConfiguration {
 	@Value("${emailServer.admin.password}")
 	private String adminPassword;
 	
-	@Value("${emailServer.api.aliases.url}")
-	private String emailServerApiAliasesUrl;
+	@Value("${emailServer.api.aliases.add_url}")
+	private String emailServerApiAddAliasesUrl;
 
-	@Value("${emailServer.aliases.target}")
-	private String emailServerTargetAlias;
+	@Value("${emailServer.imap.email}")
+	private String emailServerImapTaregtUsername;
 
-	@Value("${emailServer.aliases.target.password}")
-	private String emailServerTargetAliasPassword;
-
-	@Value("${emailServer.pop3.host}")
-	private String emailServerPop3Host;
-
-	@Value("${emailServer.pop3.port}")
-	private int emailServerPop3Port;
+	@Value("${emailServer.imap.password}")
+	private String emailServerImapTargetPassword;
 
 	@Value("${emailServer.imap.port}")
 	private String emailServerImapPort;
@@ -35,7 +29,7 @@ public class EmailServerConfiguration {
 	@Value("${emailServer.host}")
 	private String emailServerhost;
 
-	@Value("${emailServer.api.aliases.remove.url}")
+	@Value("${emailServer.api.aliases.remove_url}")
 	private String emailServerApiRemoveAliasUrl;
 
 	public String getEmailServerApiRemoveAliasUrl() {
@@ -70,36 +64,21 @@ public class EmailServerConfiguration {
 		this.emailServerImapPort = emailServerImapPort;
 	}
 
-	public String getEmailServerPop3Host() {
-		return emailServerPop3Host;
+
+	public String getEmailServerImapTargetPassword() {
+		return emailServerImapTargetPassword;
 	}
 
-	public void setEmailServerPop3Host(String emailServerPop3Host) {
-		this.emailServerPop3Host = emailServerPop3Host;
+	public void setEmailServerImapTargetPassword(String emailServerImapTargetPassword) {
+		this.emailServerImapTargetPassword = emailServerImapTargetPassword;
 	}
 
-	public int getEmailServerPop3Port() {
-		return emailServerPop3Port;
+	public String getEmailServerImapTaregtUsername() {
+		return emailServerImapTaregtUsername;
 	}
 
-	public void setEmailServerPop3Port(int emailServerPop3Port) {
-		this.emailServerPop3Port = emailServerPop3Port;
-	}
-
-	public String getEmailServerTargetAliasPassword() {
-		return emailServerTargetAliasPassword;
-	}
-
-	public void setEmailServerTargetAliasPassword(String emailServerTargetAliasPassword) {
-		this.emailServerTargetAliasPassword = emailServerTargetAliasPassword;
-	}
-
-	public String getEmailServerTargetAlias() {
-		return emailServerTargetAlias;
-	}
-
-	public void setEmailServerTargetAlias(String emailServerTargetAlias) {
-		this.emailServerTargetAlias = emailServerTargetAlias;
+	public void setEmailServerImapTaregtUsername(String emailServerImapTaregtUsername) {
+		this.emailServerImapTaregtUsername = emailServerImapTaregtUsername;
 	}
 
 	public String getAdminemail() {
@@ -110,12 +89,12 @@ public class EmailServerConfiguration {
 		return adminPassword;
 	}
 
-	public String getEmailServerApiAliasesUrl() {
-		return emailServerApiAliasesUrl;
+	public String getEmailServerApiAddAliasesUrl() {
+		return emailServerApiAddAliasesUrl;
 	}
 
-	public void setEmailServerApiAliasesUrl(String emailServerApiAliasesUrl) {
-		this.emailServerApiAliasesUrl = emailServerApiAliasesUrl;
+	public void setEmailServerApiAddAliasesUrl(String emailServerApiAddAliasesUrl) {
+		this.emailServerApiAddAliasesUrl = emailServerApiAddAliasesUrl;
 	}
 
 	public void setAdminemail(String adminemail) {

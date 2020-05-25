@@ -5,12 +5,11 @@ mvnw.cmd
 **/.mvn/wrapper/**
 ### Ignore vim swp files
 *.swp
-### Ignore application.yml properties
-**/*.yml
+### Ignore application-<enc>.yml properties
+**/application-dev.yml
+**/application-prod.yml
 *.db
 lib/
-*/application.properties
-src/main/resources/application.properties
 
 ### STS ###
 .apt_generated
