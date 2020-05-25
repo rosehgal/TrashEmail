@@ -1,0 +1,14 @@
+language: java
+# use Java 8
+jdk:
+- openjdk8
+
+sudo: false
+
+# cache the build tool's caches
+cache:
+  directories:
+  - $HOME/.m2
+
+# Build Maven project
+script: mvn clean install
