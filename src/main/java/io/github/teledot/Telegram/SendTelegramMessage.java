@@ -1,9 +1,7 @@
 package io.github.teledot.Telegram;
 
 import io.github.teledot.Configurations.TelegramConfg;
-import io.github.teledot.EmailInteraction.ImapClient;
-import io.github.teledot.Respositories.UserRepository;
-import io.github.teledot.models.User;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +29,6 @@ public class SendTelegramMessage {
         MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
         data.add("chat_id", chatId);
         data.add("text", message);
-        data.add("parse_mode", "Markdown");
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(data, headers);
 
@@ -42,8 +39,9 @@ public class SendTelegramMessage {
                 String.class);
 
         if(response.getStatusCode() == HttpStatus.OK){
-            log.info("Message sent to user: " + chatId);
+            log.debug("Message sent to user: " + chatId);
         }
-
+        else
+            log.error("Unable to send message to user: " + chatId);
     }
 }
