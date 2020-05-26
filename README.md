@@ -1,9 +1,132 @@
 # TrashEmail 
 [![Build Status](https://travis-ci.org/r0hi7/Trashemail.svg?branch=master)](https://travis-ci.org/r0hi7/Trashemail)
 
-TrashEmail is Java spring-boot microservice to handle webhook requests made via Telegram. The beauty of this code is that it offers minimilistic dependencies, just download, build and run sort of setup.
 
-The application after build will run on the `port: 9090`, and before running that setup up, one. just. need to inform telegram about this webhook. The since telegram has to register this endpoint to interact with, a public IP setup is required. One can use `ngrok`, `dataplicity` or `now` to have a hosting solution.
+### tl;dr
+Forget about spam, advertising mailings, hacking and attacking robots. Keep your real mailbox clean and secure.Trashemail provides temporary(or permanent), secure, anonymous, free, disposable email address. Want to get one ? its here : [@trashmemail_bot](https://t.me/trashemail_bot)
+
+### What is Disposable Temporary E-mail? And How am I different?
+**Disposable email** - is a service that allows to receive email at a temporary(Here in case, the temporary factor is upto you) address that self-destructed after a certain time elapses. It is also known by names like : tempmail, 10minutemail, throwaway email, fake-mail or trash-mail. Many forums, Wi-Fi owners, websites and blogs ask visitors to register before they can view content, post comments or download something. 
+
+**Trashemail** is not most advanced throwaway email service but a reliable service that helps you avoid spam, stay safe and get emails delivered directly to your [@trashemail_bot](https://t.me/trashemail_bot) *Telegram bot*. And in case you are getting too many such mails, just delete the email Id :) with one click(oops command, since this is telegram bot).
+
+There are websites that offers such sort of functionalities (like https://temp-mail.org/en/ etc) but the certain issues with such platforms:
+1. Your information is safe or not you cant audit.
+2. The domain keeps changing as soon as they are identified as temp-mail domains.
+3. Everytime you have to visit site to get one, you cant keep the same temporary mail for long.
+4. And, their business model which makes you see lot of ads in website.
+
+Considering all of this, I decided to make a open source project out of my hobby and thought of offering it as a service to others :)
+How my service is ~better~ than theirs:
+1. The entire source code is open for audit, I am not interested in your data at all.
+2. Right now I own a domain trashemail.in and you will get emailIds from this domain only. (Easy for you to remember).
+3. The temporary time for your emailId to be alive is on you, not on the server, you can keep it permamently as well, or as long as I am able to maintaint the [@trashemail_bot](https://t.me/trashemail_bot).
+4. This project is out of passion, so I dont have motive of earning anything, so **No Ads**.(I am serious, I hate them too, like you)
+5. I am always open to suggestion, feedback & Issues to work on.
+ 
+
+### Let's talk about the [Source](https://github.com/r0hi7/Trashemail).
+TrashEmail is Java spring-boot microservice that anyone can build locally currently with few setting to tune in and then have the entire setup running locally.
+ All you need to own is mail server(SMTP and IMAP), telegram bot token and `mvn` locally to build it.
+ Few requirements with the mailserver:
+ 1. SMTP host should allow **Alias** creation.
+ 2. IMAP server should support **IDLE**.
+
+All you need to do is clone the source, build and run, and just tell telegram that you are listening here.
+```shell script
+git clone https://github.com/r0hi7/Trashemail.git
+cd Trashemail
+
+# Update the application.yml file
+# according to your mail server
+
+mvn clean install
+# If successfull
+java -jar target/trashemail target/teledot-0.0.1-SNAPSHOT.jar
+```
+Dev config may look like this:
+```yaml
+# Email Server IMAP and SMTP configuration
+# SMTP server should support Alias creation and deletion
+# IMAP server should support IDLE
+emailServer:
+  host: trashemail.in
+  admin:
+    email: contact@trashemail.in
+    password: changeme
+  api:
+    aliases:
+      add_url: https://trashemail.in/admin/mail/aliases/add
+      remove_url: https://trashemail.in/admin/mail/aliases/remove
+  imap:
+    host: trashemail.in
+    port: 993
+    email: contact@trashemail.in
+    password: changeme
 
 
-How to register webhook with telegram :  `curl -F "url=https://<YOUR_DOMAIN>/telegram/new-message" https://api.telegram.org/bot<BOT_TOKEN>/setWebhook`
+# Telegram bot specific settings
+telegram:
+  url: https://api.telegram.org/bot
+  botToken: telegram-bot-token
+
+# For development purpose, H2 is used.
+# I prefer H2 persistent in file.
+spring:
+  datasource:
+    url: jdbc:h2:file:./AppDB;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+  h2:
+    console:
+      path: /h2-console
+      settings:
+        web-allow-others: true
+  application:
+    name: Trashemail
+
+# Tomcat server settings
+server:
+  port: 9090
+
+# Logger settings
+logging:
+  level:
+    io:
+      github:
+        trashemail: debug
+
+```
+
+1. This code will spin up the service at `localhost:9090/telegram/new-message` endpoint.
+2. Now will have to expose this service to internet, and there are options like : `ngrok`, `dataplicity`, `localtunnel` etc.
+3. DB is taken care by `h2`, in a file, (I think that is sufficient, It need very light DB table).
+4. Get a bot for you from, [Telegram Bot Father](https://telegram.me/BotFather)
+5. The last step is important, tell telegram that where you are listening :)
+    ```shell script
+    curl -F "url=https://<YOUR_DOMAIN>/telegram/new-message" https://api.telegram.org/bot<BOT_TOKEN>/setWebhook
+    ```
+6. And you are done.
+
+### How It Works
+1. For this bot to work, you need existing SMTP, IMAP setup.
+    1. SMTP with Alias creation
+    2. IMAP with IDLE enabled
+3. As user, requests for creation,
+2. It fools the user, that it created an email Id rather it creates an alais to exiting ID.
+    1. Why Alais, as IMAP needs to poll right, for incoming mails? This is how it is engineered.
+3. Runs a background async service to poll IMAP server.
+4. As soon as mail is fetched, the target is identified and telegram message is sent.
+
+I have tried to engineer this service to be reliable, in case if you find any issues with the reliability(or with anything else), please feel free to drop in a PR. I would be happy to review and merge.
+
+
+### Credits
+![TelegramAllTheThings](./telegram-group-all-the-things.jpg)
+
+
