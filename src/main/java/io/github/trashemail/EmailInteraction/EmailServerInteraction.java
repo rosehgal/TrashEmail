@@ -18,6 +18,9 @@ public class EmailServerInteraction {
 	@Autowired
 	private EmailServerConfiguration emailServerConfig;
 
+	@Autowired
+	RestTemplate restTemplate;
+
 	
 	public String createEmailId(User user) throws HttpClientErrorException {
 		
@@ -34,8 +37,7 @@ public class EmailServerInteraction {
 		data.add("forwards_to", emailServerConfig.getEmailServerImapTaregtUsername());
 		
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(data, headers);
-		
-		RestTemplate restTemplate = new RestTemplate();
+
 		ResponseEntity response = restTemplate.postForEntity(
 			emailServerConfig.getEmailServerApiAddAliasesUrl(),
 			request, 
