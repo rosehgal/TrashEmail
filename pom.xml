@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>io.github</groupId>
 	<artifactId>trashemail</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>Trashemail</name>
 	<description>Sprinboot miscroservice heart of Telegram @trashemail_bot</description>
 
