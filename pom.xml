@@ -13,7 +13,13 @@
 	<version>1.0.0</version>
 	<name>Trashemail</name>
 	<description>Sprinboot miscroservice heart of Telegram @trashemail_bot</description>
-
+	<distributionManagement>
+	<repository>
+		<id>github</id>
+		<name>GitHub Packages</name>
+		<url>https://maven.pkg.github.com/r0hi7/Trashemail</url>
+		</repository>
+	</distributionManagement>
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
