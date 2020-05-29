@@ -59,16 +59,21 @@ public class TelegramRequestHandler {
 						"2. Quickly delete those emailIds\n" +
 						"3. Since I own, trashemail.in your emailId will belong this domain\n" +
 						"4. I dont read anything, I respect your privacy. Any doubt? Audit my source code." +
-						"\n" +
+						"\n\n" +
 						"I am still a baby and learning.\n" +
 						"Do you have idea for addon? Please feel free to reach @ https://github.com/r0hi7/Trashemail" +
 						" and raise an issue. I will definitely work out on that" +
-						"";
+						"\n\n" +
+						"For now to get started try\n" +
+						"* /create <user>@trashemail.in\n" +
+						"* /delete <user>@trashemail.in\n" +
+						"* /help\n" +
+						"* /emails\n";
 
 			case "/create":
 				if(userRepository.findByChatId(chatId).size()>=2)
 					return "Only Two email Ids are allowed per-user\n" +
-							"You can get the list of all the emails @ /emailIds";
+							"You can get the list of all the emails @ /emails";
 
 				else{
 					// parse the argument and treat it as email id.
@@ -107,10 +112,10 @@ public class TelegramRequestHandler {
 						"Currently, I support:\n" +
 						"/create - That can get you one(or two) custom disposable emails.\n" +
 						"/delete - If you are getting spams for any mail id, just delete it because it is disposable.\n" +
-						"/emailIds - Get the list of all the emailIds that belongs to you.\n" +
+						"/emails - Get the list of all the emailIds that belongs to you.\n" +
 						"/help - this help message.\n";
 
-			case "/emailIds":
+			case "/emails":
 				String response = "Currently, you have below mentioned emails with you.\n*";
 				List<User> allEmailsWithUser = userRepository.findByChatId(chatId);
 				for(User emailWithUser: allEmailsWithUser){
@@ -149,11 +154,11 @@ public class TelegramRequestHandler {
 				break;
 
 			default:
-				return "I dont understand that ...\n, " +
+				return "I dont understand that ...\n " +
 						"I only understand few commands.\n" +
 						"/create <something>@trashemail.in\n" +
 						"/delete <something>@trashemail.in\n" +
-						"/emailIds\n" +
+						"/emails\n" +
 						"/help\n";
 		}
 
