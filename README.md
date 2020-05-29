@@ -3,7 +3,7 @@
 
 
 ### tl;dr
-Forget about spam, advertising mailings, hacking and attacking robots. Keep your real mailbox clean and secure.Trashemail provides temporary(or permanent), secure, anonymous, free, disposable email address. Want to get one ? its here : [@trashmemail_bot](https://t.me/trashemail_bot)
+Forget about spam, advertising mailings, hacking and attacking robots. Keep your real mailbox clean and secure.Trashemail provides temporary(or permanent), secure, anonymous, free, disposable email address. Want to get one ? its here : [@trashemail_bot](https://t.me/trashemail_bot)
 
 ### What is Disposable Temporary E-mail? And How am I different?
 **Disposable email** - is a service that allows to receive email at a temporary(Here in case, the temporary factor is upto you) address that self-destructed after a certain time elapses. It is also known by names like : tempmail, 10minutemail, throwaway email, fake-mail or trash-mail. Many forums, Wi-Fi owners, websites and blogs ask visitors to register before they can view content, post comments or download something. 
