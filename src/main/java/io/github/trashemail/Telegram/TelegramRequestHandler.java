@@ -100,6 +100,9 @@ public class TelegramRequestHandler {
 						return this.createEmail(user);
 					}
 					else{
+						if(argument.isEmpty())
+							return "Please use command like /create <custom_name>@trashemail.in";
+
 						return "Email id should be of the form: `*@"+
 								emailServerConfiguration.getEmailServerhost()+"`";
 					}
@@ -148,6 +151,9 @@ public class TelegramRequestHandler {
 
 				}
 				else{
+					if(argument.isEmpty())
+						return "Please use command like /delete <custom_name>@trashemail.in";
+
 					return "Email id should be of the form: `*@"+
 							emailServerConfiguration.getEmailServerhost()+'`';
 				}
