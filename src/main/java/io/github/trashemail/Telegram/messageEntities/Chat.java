@@ -1,7 +1,7 @@
 package io.github.trashemail.Telegram.messageEntities;
 
 public class Chat {
-	private Integer id;
+	private long id;
 	private String first_name;
 	private String last_name;
 	private String username;
@@ -10,11 +10,11 @@ public class Chat {
 	public Chat() {
 	}
 
-	public Integer getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

@@ -31,14 +31,14 @@ import io.github.trashemail.Telegram.messageEntities.From;
 }
  */
 public class TelegramRequest {
-    private Integer update_id;
+    private long update_id;
     private Message message;
 
     public TelegramRequest() {
     }
 
     public class Message{
-        private Integer message_id;
+        private long message_id;
         private From from;
         private Chat chat;
         private Date date;
@@ -55,7 +55,7 @@ public class TelegramRequest {
             this.chat = chat;
         }
 
-        public Integer getMessage_id() {
+        public long getMessage_id() {
             return message_id;
         }
 
@@ -88,7 +88,7 @@ public class TelegramRequest {
         }
     }
 
-    public Integer getUpdate_id() {
+    public long getUpdate_id() {
         return update_id;
     }
 

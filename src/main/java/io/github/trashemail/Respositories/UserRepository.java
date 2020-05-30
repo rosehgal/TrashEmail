@@ -9,7 +9,7 @@ import io.github.trashemail.models.User;
 
 @Repository
 public interface UserRepository extends CrudRepository<User, Integer>{
-	public List<User> findByChatId(Integer chatId);
+	public List<User> findByChatId(long chatId);
 	public User findByEmailId(String emailId);
 	public boolean existsByEmailId(String emailId);
 	public void delete(User user);

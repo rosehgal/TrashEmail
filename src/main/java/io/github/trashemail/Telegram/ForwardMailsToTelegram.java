@@ -26,6 +26,6 @@ public class ForwardMailsToTelegram {
         User user = userRepository.findByEmailId(emailFor);
         MailParser parsedMail = new MailParser(message);
 
-        sendTelegramMessage.sendMessage(parsedMail.toString(), Integer.toString(user.getChatId()));
+        sendTelegramMessage.sendMessage(parsedMail.toString(), Long.toString(user.getChatId()));
     }
 }

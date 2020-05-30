@@ -10,18 +10,18 @@ package io.github.trashemail.Telegram;
 
 public class TelegramResponse {
     private String method;
-    private Integer chat_id;
+    private long chat_id;
     private String text;
     private String parse_mode;
 
-    public TelegramResponse(String method, Integer chat_id, String text) {
+    public TelegramResponse(String method, long chat_id, String text) {
         this.method = method;
         this.chat_id = chat_id;
         this.text = text;
         this.parse_mode = "Markdown";
     }
 
-    public TelegramResponse(Integer chat_id, String text) {
+    public TelegramResponse(long chat_id, String text) {
         this.method = "sendMessage";
         this.chat_id = chat_id;
         this.text = text;
@@ -44,11 +44,11 @@ public class TelegramResponse {
         this.method = method;
     }
 
-    public Integer getChat_id() {
+    public long getChat_id() {
         return chat_id;
     }
 
-    public void setChat_id(Integer chat_id) {
+    public void setChat_id(long chat_id) {
         this.chat_id = chat_id;
     }
 

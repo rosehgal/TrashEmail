@@ -8,6 +8,7 @@ mvnw.cmd
 ### Ignore application-<enc>.yml properties
 **/application-dev.yml
 **/application-prod.yml
+**/application-qa.yml
 *.db
 lib/
 

@@ -3,7 +3,7 @@ package io.github.trashemail.Telegram.messageEntities;
 import java.util.Date;
 
 public class Message {
-	private Integer message_id;
+	private long message_id;
 
 	private From from;
 	private Chat chat;
@@ -22,11 +22,11 @@ public class Message {
 		this.chat = chat;
 	}
 
-	public Integer getMessage_id() {
+	public long getMessage_id() {
 		return message_id;
 	}
 
-	public void setMessage_id(Integer message_id) {
+	public void setMessage_id(long message_id) {
 		this.message_id = message_id;
 	}
 

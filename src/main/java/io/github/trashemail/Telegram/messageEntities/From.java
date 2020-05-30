@@ -1,7 +1,7 @@
 package io.github.trashemail.Telegram.messageEntities;
 
 public class From {
-	private Integer id;
+	private long id;
 	private boolean is_bot;
 	private String first_name;
 	private String last_name;
@@ -11,11 +11,11 @@ public class From {
 	public From() {
 	}
 
-	public Integer getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

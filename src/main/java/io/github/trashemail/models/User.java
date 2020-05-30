@@ -13,7 +13,7 @@ public class User {
 	@Id
 	@GeneratedValue
 	private Integer id;
-	private Integer chatId;
+	private long chatId;
 
 	@Column(unique = true)
 	private String emailId;
@@ -22,7 +22,7 @@ public class User {
 	
 	public User() {}
 	
-	public User(Integer chatId, String emailId, String forwardsTo) {
+	public User(long chatId, String emailId, String forwardsTo) {
 		this.chatId = chatId;
 		this.emailId = emailId;
 		this.forwardsTo = forwardsTo;
@@ -34,10 +34,10 @@ public class User {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public Integer getChatId() {
+	public long getChatId() {
 		return chatId;
 	}
-	public void setChatId(Integer chatId) {
+	public void setChatId(long chatId) {
 		this.chatId = chatId;
 	}
 	public String getEmailId() {

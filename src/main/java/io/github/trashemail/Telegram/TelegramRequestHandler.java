@@ -39,7 +39,7 @@ public class TelegramRequestHandler {
 				user.getEmailId();
 	}
 
-	public String handleRequest(Integer chatId, String text) {
+	public String handleRequest(long chatId, String text) {
 
 		String []strings = text.split(" ");
 
@@ -141,7 +141,7 @@ public class TelegramRequestHandler {
 					User user = userRepository.findByEmailId(emailId);
 					// user should only delete email owned by user.
 					if(userRepository.existsByEmailId(emailId)){
-						if(chatId.equals(user.getChatId())) {
+						if(((Long)chatId).equals(user.getChatId())) {
 							return this.deleteEmail(user);
 						}
 					}
