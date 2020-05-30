@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 public class TelegramConfg{
     private String botToken;
     private String url;
+    private int size=4096;
 
     public String getUrl() {
         return url;
@@ -23,5 +24,13 @@ public class TelegramConfg{
 
     public void setBotToken(String botToken) {
         this.botToken = botToken;
+    }
+
+    public int getSize() {
+    	return size;
+    }
+
+    public void setSize(int size) {
+    	this.size = size;
     }
 }
