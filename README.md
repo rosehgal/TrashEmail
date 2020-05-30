@@ -2,8 +2,7 @@
 [![Build Status](https://travis-ci.org/r0hi7/Trashemail.svg?branch=master)](https://travis-ci.org/r0hi7/Trashemail)
 
 ```diff
-- Currently telegram bot is down. I am getting certificate issue from Telagram API, I will fix this ASAP and bot will be healthy again.
-+ Till then please go through the source.
++ Bot is healthy UP and running :)
 ```
 
 ### tl;dr
