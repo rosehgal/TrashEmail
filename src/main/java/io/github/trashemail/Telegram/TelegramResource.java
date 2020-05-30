@@ -1,5 +1,7 @@
 package io.github.trashemail.Telegram;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,11 +15,15 @@ public class TelegramResource {
 	
 	@Autowired
 	TelegramRequestHandler telegramRequestHandler;
+	@Autowired
+	SendTelegramMessage sendTelegramMessage;
+
+	private static final Logger log = LoggerFactory.getLogger(TelegramResource.class);
 
     @PostMapping(value = "/new-message")
     public TelegramResponse messageHandler(@RequestBody TelegramRequest telegramRequest) {
     	
-    	String response;
+    	String response = null;
     	
     	try {
     		response = telegramRequestHandler.handleRequest(
@@ -27,7 +33,14 @@ public class TelegramResource {
     	}
     	catch(HttpClientErrorException httpClientException) {
     		response = httpClientException.getMessage();
-    	}
+    	}catch(Exception e){
+    		e.printStackTrace();
+    		log.error(e.getMessage());
+    		return new TelegramResponse(
+    			1,
+				"Unprocessed"
+			);
+		}
     	
     	return new TelegramResponse(
     		telegramRequest.getMessage().getChat().getId(),
