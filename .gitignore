@@ -9,6 +9,7 @@ mvnw.cmd
 **/application-dev.yml
 **/application-prod.yml
 **/application-qa.yml
+src/main/resources/application.yml
 *.db
 lib/
 bin/

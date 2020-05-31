@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.github.trashemail.Configurations.EmailServerConfiguration;
+import io.github.trashemail.utils.exceptions.EmailAliasNotCreatedExecption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class TelegramRequestHandler {
 
 	private static final Logger log = LoggerFactory.getLogger(TelegramRequestHandler.class);
 	
-	public String createEmail(User user) throws HttpClientErrorException {
+	public String createEmail(User user) throws HttpClientErrorException, EmailAliasNotCreatedExecption {
 		return emailServerInteraction.createEmailId(user); 
 	}
 	public String deleteEmail(User user) throws HttpClientErrorException{
@@ -96,8 +97,29 @@ public class TelegramRequestHandler {
 						User user = new User(chatId,
 								   			 emailId,
 											 emailServerConfiguration.getEmailServerImapTaregtUsername());
-						userRepository.save(user);
-						return this.createEmail(user);
+
+						String response = null;
+						try {
+
+							response = this.createEmail(user);
+
+						}catch (EmailAliasNotCreatedExecption emailAliasNotCreatedExecption){
+
+							log.error("Exception " + emailAliasNotCreatedExecption.getMessage());
+							return "Email address is already taken.\nPlease try something else.";
+
+						}catch (HttpClientErrorException httpClientErrorException){
+
+							log.error("Exception " + httpClientErrorException.getMessage());
+							return "Email address is already taken.\nPlease try something else.";
+						}
+
+						if(response!=null) {
+							userRepository.save(user);
+							return "Something bad just happened with me. Stay back till I get fixed.";
+						}
+
+						return response;
 					}
 					else{
 						if(argument.isEmpty())

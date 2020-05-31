@@ -1,5 +1,9 @@
 package io.github.trashemail.EmailInteraction;
 
+import io.github.trashemail.Telegram.TelegramRequestHandler;
+import io.github.trashemail.utils.exceptions.EmailAliasNotCreatedExecption;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -21,8 +25,9 @@ public class EmailServerInteraction {
 	@Autowired
 	RestTemplate restTemplate;
 
-	
-	public String createEmailId(User user) throws HttpClientErrorException {
+	private static final Logger log = LoggerFactory.getLogger(EmailServerInteraction.class);
+
+	public String createEmailId(User user) throws HttpClientErrorException, EmailAliasNotCreatedExecption {
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setBasicAuth(
@@ -48,13 +53,8 @@ public class EmailServerInteraction {
 					"successfully Created :)";
 		}
 
-		if(response.getStatusCode() == HttpStatus.BAD_REQUEST &&
-				((String)response.getBody()).contains("Alias already exists")){
-			return "Email ID : *"+user.getEmailId()+"* "+
-					"already taken :)";
-		}
-
-		return response.getBody().toString();
+		log.error(response.getStatusCode().toString() + response.getBody());
+		throw new EmailAliasNotCreatedExecption(response.getBody().toString());
 	}
 
 	public boolean deleteEmailId(User user) {
