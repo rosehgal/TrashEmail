@@ -20,6 +20,9 @@ import org.springframework.web.client.RestTemplate;
 public class SendTelegramMessage {
     @Autowired
     private TelegramConfg telegramConfg;
+    
+    @Autowired
+    RestTemplate restTemplate;
 
     private static final Logger log = LoggerFactory.getLogger(SendTelegramMessage.class);
 
@@ -46,7 +49,6 @@ public class SendTelegramMessage {
 
         	HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(data, headers);
 
-        	RestTemplate restTemplate = new RestTemplate();
         	ResponseEntity response = restTemplate.postForEntity(
         			telegramURI,
         			request,
