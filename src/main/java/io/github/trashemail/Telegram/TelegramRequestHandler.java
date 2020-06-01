@@ -116,10 +116,11 @@ public class TelegramRequestHandler {
 
 						if(response!=null) {
 							userRepository.save(user);
-							return "Something bad just happened with me. Stay back till I get fixed.";
+							return "Email successfully created.";
 						}
 
-						return response;
+						log.error(response);
+						return "Something bad just happened with me. Stay back till I get fixed.";
 					}
 					else{
 						if(argument.isEmpty())
