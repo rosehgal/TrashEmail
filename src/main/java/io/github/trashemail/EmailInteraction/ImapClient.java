@@ -2,7 +2,7 @@ package io.github.trashemail.EmailInteraction;
 
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.imap.IMAPStore;
-import io.github.trashemail.Configurations.EmailServerConfiguration;
+import io.github.trashemail.Configurations.EmailServerConfig;
 import io.github.trashemail.Telegram.ForwardMailsToTelegram;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +25,7 @@ import java.util.Properties;
 public class ImapClient {
 
     @Autowired
-    EmailServerConfiguration emailServerConfiguration;
+    EmailServerConfig emailServerConfig;
 
     @Autowired
     ForwardMailsToTelegram forwardMailsToTelegram;
@@ -37,16 +37,16 @@ public class ImapClient {
 
     @PostConstruct
     public void init(){
-        username = emailServerConfiguration.getEmailServerImapTaregtUsername();
-        password = emailServerConfiguration.getEmailServerImapTargetPassword();
+        username = emailServerConfig.getImap().getEmail();
+        password = emailServerConfig.getImap().getPassword();
     }
 
     @Async("threadPoolTaskExecutor")
     public void fetchNewEmails() throws Exception {
         Properties properties = new Properties();
         properties.put("mail.store.protocol", "imaps");
-        properties.put("mail.imaps.host", emailServerConfiguration.getEmailServerImapHost());
-        properties.put("mail.imaps.port", emailServerConfiguration.getEmailServerImapPort());
+        properties.put("mail.imaps.host", emailServerConfig.getImap().getHost());
+        properties.put("mail.imaps.port", emailServerConfig.getImap().getPort());
         properties.put("mail.imaps.timeout", "10000");
         properties.put("mail.imaps.ssl.protocols", "TLSv1.2");
 

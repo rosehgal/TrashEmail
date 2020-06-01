@@ -1,5 +1,7 @@
 package io.github.trashemail.Telegram;
 
+import io.github.trashemail.Telegram.DTO.TelegramRequest;
+import io.github.trashemail.Telegram.DTO.TelegramResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

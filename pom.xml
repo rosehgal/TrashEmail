@@ -10,9 +10,9 @@
 	</parent>
 	<groupId>io.github</groupId>
 	<artifactId>trashemail</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 	<name>Trashemail</name>
-	<description>Sprinboot miscroservice heart of Telegram @trashemail_bot</description>
+	<description>Springboot miscroservice - heart of Telegram @trashemail_bot</description>
 	<distributionManagement>
 	<repository>
 		<id>github</id>
@@ -81,6 +81,11 @@
 			<groupId>org.jsoup</groupId>
 			<artifactId>jsoup</artifactId>
 			<version>1.13.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.10</version>
 		</dependency>
 	</dependencies>
 	<!-- https://mvnrepository.com/artifact/org.jsoup/jsoup -->

@@ -1,6 +1,6 @@
 package io.github.trashemail.EmailInteraction;
 
-import io.github.trashemail.Telegram.TelegramRequestHandler;
+import io.github.trashemail.Configurations.EmailServerConfig;
 import io.github.trashemail.utils.exceptions.EmailAliasNotCreatedExecption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +12,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import io.github.trashemail.Configurations.EmailServerConfiguration;
 import io.github.trashemail.models.User;
 
 
@@ -20,7 +19,7 @@ import io.github.trashemail.models.User;
 public class EmailServerInteraction {
 
 	@Autowired
-	private EmailServerConfiguration emailServerConfig;
+	private EmailServerConfig emailServerConfig;
 
 	@Autowired
 	RestTemplate restTemplate;
@@ -31,7 +30,7 @@ public class EmailServerInteraction {
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setBasicAuth(
-			emailServerConfig.getAdminemail(),
+			emailServerConfig.getAdminEmail(),
 			emailServerConfig.getAdminPassword()
 		);
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -39,12 +38,12 @@ public class EmailServerInteraction {
 		MultiValueMap<String, String> data = new LinkedMultiValueMap<String, String>();
 		
 		data.add("address", user.getEmailId());
-		data.add("forwards_to", emailServerConfig.getEmailServerImapTaregtUsername());
+		data.add("forwards_to", emailServerConfig.getImap().getEmail());
 		
 		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(data, headers);
 
 		ResponseEntity response = restTemplate.postForEntity(
-			emailServerConfig.getEmailServerApiAddAliasesUrl(),
+			emailServerConfig.getAddUrl(),
 			request, 
 			String.class);
 
@@ -60,7 +59,7 @@ public class EmailServerInteraction {
 	public boolean deleteEmailId(User user) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setBasicAuth(
-				emailServerConfig.getAdminemail(),
+				emailServerConfig.getAdminEmail(),
 				emailServerConfig.getAdminPassword()
 		);
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -73,7 +72,7 @@ public class EmailServerInteraction {
 
 		RestTemplate restTemplate = new RestTemplate();
 		ResponseEntity response = restTemplate.postForEntity(
-				emailServerConfig.getEmailServerApiRemoveAliasUrl(),
+				emailServerConfig.getRemoveUrl(),
 				request,
 				String.class);
 

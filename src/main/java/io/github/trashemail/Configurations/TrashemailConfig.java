@@ -6,13 +6,16 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
-@ConfigurationProperties(prefix="telegram")
 @Getter
 @Setter
 @NoArgsConstructor
-public class TelegramConfg{
-    private String botToken;
-    private String url;
-    private int size;
+@Configuration
+@ConfigurationProperties(prefix = "trashemail")
+public class TrashemailConfig {
+    private Integer maxEmailsPerUser;
+
+    @Override
+    public String toString() {
+        return Integer.toString(maxEmailsPerUser);
+    }
 }

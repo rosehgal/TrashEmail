@@ -1,4 +1,4 @@
-package io.github.trashemail.Telegram;
+package io.github.trashemail.Telegram.DTO;
 
 /*
 {
@@ -8,6 +8,13 @@ package io.github.trashemail.Telegram;
 }
  */
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
 public class TelegramResponse {
     private String method;
     private long chat_id;
@@ -26,37 +33,5 @@ public class TelegramResponse {
         this.chat_id = chat_id;
         this.text = text;
         this.parse_mode = "Markdown";
-    }
-
-    public String getParse_mode() {
-        return parse_mode;
-    }
-
-    public void setParse_mode(String parse_mode) {
-        this.parse_mode = parse_mode;
-    }
-
-    public String getMethod() {
-        return method;
-    }
-
-    public void setMethod(String method) {
-        this.method = method;
-    }
-
-    public long getChat_id() {
-        return chat_id;
-    }
-
-    public void setChat_id(long chat_id) {
-        this.chat_id = chat_id;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
     }
 }

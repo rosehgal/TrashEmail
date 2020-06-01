@@ -52,26 +52,27 @@ Dev config may look like this:
 # Email Server IMAP and SMTP configuration
 # SMTP server should support Alias creation and deletion
 # IMAP server should support IDLE
-emailServer:
-  host: trashemail.in
-  admin:
-    email: contact@trashemail.in
-    password: changeme
-  api:
-    aliases:
-      add_url: https://trashemail.in/admin/mail/aliases/add
-      remove_url: https://trashemail.in/admin/mail/aliases/remove
+
+email-server:
+  hosts:
+    - trashemail.in
+    - thromail.com
+    - humblemail.com
+  admin-email: contact@trashemail.in
+  admin-password: changeme
+  add-url: https://trashemail.in/admin/mail/aliases/add
+  remove-url: https://trashemail.in/admin/mail/aliases/remove
   imap:
     host: trashemail.in
     port: 993
     email: contact@trashemail.in
     password: changeme
 
-
 # Telegram bot specific settings
 telegram:
   url: https://api.telegram.org/bot
-  botToken: telegram-bot-token
+  botToken: xxxxxxxxxxxxxxxxxxxxxx
+  size: 4096
 
 # For development purpose, H2 is used.
 # I prefer H2 persistent in file.
@@ -90,6 +91,7 @@ spring:
       path: /h2-console
       settings:
         web-allow-others: true
+      enabled: true
   application:
     name: Trashemail
 
@@ -97,13 +99,16 @@ spring:
 server:
   port: 9090
 
+# Trashemail app server settings
+trashemail:
+  max-emails-per-user: 4
+
 # Logger settings
 logging:
   level:
     io:
       github:
         trashemail: debug
-
 ```
 
 1. This code will spin up the service at `localhost:9090/telegram/new-message` endpoint.

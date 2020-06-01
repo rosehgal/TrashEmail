@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.github.trashemail.Configurations.EmailServerConfiguration;
+import io.github.trashemail.Configurations.EmailServerConfig;
+import io.github.trashemail.Configurations.TrashemailConfig;
 import io.github.trashemail.utils.exceptions.EmailAliasNotCreatedExecption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,9 @@ public class TelegramRequestHandler {
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
-	private EmailServerConfiguration emailServerConfiguration;
+	private EmailServerConfig emailServerConfig;
+	@Autowired
+	private TrashemailConfig trashemailConfig;
 
 	private static final Logger log = LoggerFactory.getLogger(TelegramRequestHandler.class);
 	
@@ -58,7 +61,8 @@ public class TelegramRequestHandler {
 						"I am a disposable bot email id generator that can:\n" +
 						"1. Quickly generate a disposable email for you, no email management hassle \uD83D\uDE0B\t\n" +
 						"2. Quickly delete those emailIds\n" +
-						"3. Since I own, trashemail.in your emailId will belong this domain\n" +
+						"3. Since I own, *trashemail.in*, *humblemail.com* & *thromail.com* " +
+						"your emailId will belong these domains\n" +
 						"4. I dont read anything, I respect your privacy. Any doubt? Audit my source code." +
 						"\n\n" +
 						"I am still a baby and learning.\n" +
@@ -66,21 +70,20 @@ public class TelegramRequestHandler {
 						" and raise an issue. I will definitely work out on that" +
 						"\n\n" +
 						"For now to get started try\n" +
-						"* /create <user>@trashemail.in\n" +
-						"* /delete <user>@trashemail.in\n" +
+						"* /create <user>@("+ String.join("|", emailServerConfig.getHosts()) +")\n" +
+						"* /delete emailId\n" +
 						"* /help\n" +
 						"* /emails\n";
 
 			case "/create":
-				if(userRepository.findByChatId(chatId).size()>=2)
-					return "Only Two email Ids are allowed per-user\n" +
+				if(userRepository.findByChatId(chatId).size() >= trashemailConfig.getMaxEmailsPerUser())
+					return "Only "+trashemailConfig.getMaxEmailsPerUser()+" email Ids are allowed per-user\n" +
 							"You can get the list of all the emails @ /emails";
 
 				else{
 					// parse the argument and treat it as email id.
-					String emailRegex = "^[A-Za-z0-9._%+-]+@"+
-							emailServerConfiguration.getEmailServerhost()+
-							"$";
+					String emailRegex = "^[A-Za-z0-9._%+-]+@(" +
+										String.join("|", emailServerConfig.getHosts()) +")$";
 
 					Pattern pattern = Pattern.compile(emailRegex);
 					Matcher matcher = pattern.matcher(argument);
@@ -96,7 +99,7 @@ public class TelegramRequestHandler {
 
 						User user = new User(chatId,
 								   			 emailId,
-											 emailServerConfiguration.getEmailServerImapTaregtUsername());
+											 emailServerConfig.getImap().getEmail());
 
 						String response = null;
 						try {
@@ -124,10 +127,10 @@ public class TelegramRequestHandler {
 					}
 					else{
 						if(argument.isEmpty())
-							return "Please use command like /create <custom_name>@trashemail.in";
+							return "Please use command like /create <custom_name>@"+String.join("|", emailServerConfig.getHosts());
 
-						return "Email id should be of the form: `*@"+
-								emailServerConfiguration.getEmailServerhost()+"`";
+						return "Email id should be of the form: `*@("+
+								String.join("|", emailServerConfig.getHosts())+")`";
 					}
 				}
 			case "/help":
@@ -136,7 +139,7 @@ public class TelegramRequestHandler {
 						"I am open source and runs on open source services." +
 						"You can find my heart, soul and brain at: https://github.com/r0hi7/Trashemail\n\n"+
 						"Currently, I support:\n" +
-						"/create - That can get you one(or two) custom disposable emails.\n" +
+						"/create - That can get you one(or more) custom disposable emails.\n" +
 						"/delete - If you are getting spams for any mail id, just delete it because it is disposable.\n" +
 						"/emails - Get the list of all the emailIds that belongs to you.\n" +
 						"/help - this help message.\n";
@@ -151,9 +154,9 @@ public class TelegramRequestHandler {
 				return response;
 
 			case "/delete":
-				String emailRegex = "^[A-Za-z0-9._%+-]+@"+
-						emailServerConfiguration.getEmailServerhost()+
-						"$";
+				String emailRegex = "^[A-Za-z0-9._%+-]+@("+
+						String.join("|", emailServerConfig.getHosts())+
+						")$";
 
 				Pattern pattern = Pattern.compile(emailRegex);
 				Matcher matcher = pattern.matcher(argument);
@@ -169,26 +172,26 @@ public class TelegramRequestHandler {
 						}
 					}
 					else{
-						return "*Email not registered to any user ..*";
+						return "*Email not registered to this user ..*";
 					}
 
 				}
 				else{
 					if(argument.isEmpty())
-						return "Please use command like /delete <custom_name>@trashemail.in";
+						return "Please use command like /delete <custom_name>@" + String.join("|", emailServerConfig.getHosts());
 
-					return "Email id should be of the form: `*@"+
-							emailServerConfiguration.getEmailServerhost()+'`';
+					return "Email id should be of the form: `*@("+
+							String.join("|", emailServerConfig.getHosts())+")`";
 				}
 				break;
 
 			default:
 				return "I dont understand that ...\n " +
 						"I only understand few commands.\n" +
-						"/create <something>@trashemail.in\n" +
-						"/delete <something>@trashemail.in\n" +
-						"/emails\n" +
-						"/help\n";
+						"1. /create <user>@("+ String.join("|", emailServerConfig.getHosts()) +")\n" +
+						"2. /delete emailId\n" +
+						"3. /help\n" +
+						"4. /emails\n";
 		}
 
 		return null;
