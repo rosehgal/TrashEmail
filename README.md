@@ -14,9 +14,9 @@ Forget about spam, advertising mailings, hacking and attacking robots. Keep your
 **Trashemail** is not most advanced throwaway email service but a reliable service that helps you avoid spam, stay safe and get emails delivered directly to your [@trashemail_bot](https://t.me/trashemail_bot) *Telegram bot*. And in case you are getting too many such mails, just delete the email Id :) with one click(oops command, since this is telegram bot).
 
 There are websites that offers such sort of functionalities (like https://temp-mail.org/en/ etc) but the certain issues with such platforms:
-1. Your information is safe or not you cant audit.
+1. Your information is safe or not you can't audit.
 2. The domain keeps changing as soon as they are identified as temp-mail domains.
-3. Everytime you have to visit site to get one, you cant keep the same temporary mail for long.
+3. Everytime you have to visit site to get one, you can't keep the same temporary mail for long.
 4. And, their business model which makes you see lot of ads in website.
 
 Considering all of this, I decided to make a open source project out of my hobby and thought of offering it as a service to others :)
@@ -136,5 +136,5 @@ I have tried to engineer this service to be reliable, in case if you find any is
 
 ### Credits
 ![TelegramAllTheThings](./telegram-group-all-the-things.jpg)
-Cant find one for the BOT. L0L
+Can't find one for the BOT. L0L
 
