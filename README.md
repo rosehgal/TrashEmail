@@ -14,17 +14,17 @@ Forget about spam, advertising mailings, hacking and attacking robots. Keep your
 **Trashemail** is not most advanced throwaway email service but a reliable service that helps you avoid spam, stay safe and get emails delivered directly to your [@trashemail_bot](https://t.me/trashemail_bot) *Telegram bot*. And in case you are getting too many such mails, just delete the email Id :) with one click(oops command, since this is telegram bot).
 
 There are websites that offers such sort of functionalities (like https://temp-mail.org/en/ etc) but the certain issues with such platforms:
-1. Your information is safe or not you cant audit.
+1. Your information is safe or not you can't audit.
 2. The domain keeps changing as soon as they are identified as temp-mail domains.
-3. Everytime you have to visit site to get one, you cant keep the same temporary mail for long.
+3. Everytime you have to visit site to get one, you can't keep the same temporary mail for long.
 4. And, their business model which makes you see lot of ads in website.
 
 Considering all of this, I decided to make a open source project out of my hobby and thought of offering it as a service to others :)
 How my service is ~better~ than theirs:
 1. The entire source code is open for audit, I am not interested in your data at all.
 2. Right now I own a domain trashemail.in and you will get emailIds from this domain only. (Easy for you to remember).
-3. The temporary time for your emailId to be alive is on you, not on the server, you can keep it permamently as well, or as long as I am able to maintaint the [@trashemail_bot](https://t.me/trashemail_bot).
-4. This project is out of passion, so I dont have motive of earning anything, so **No Ads**.(I am serious, I hate them too, like you)
+3. The temporary time for your emailId to be alive is on you, not on the server, you can keep it permanently as well, or as long as I am able to maintain the [@trashemail_bot](https://t.me/trashemail_bot).
+4. This project is out of passion, so I don't have motive of earning anything, so **No Ads**.(I am serious, I hate them too, like you)
 5. I am always open to suggestion, feedback & Issues to work on.
  
 
@@ -126,7 +126,7 @@ logging:
     1. SMTP with Alias creation
     2. IMAP with IDLE enabled
 3. As user, requests for creation,
-2. It fools the user, that it created an email Id rather it creates an alais to exiting ID.
+2. It fools the user, that it created an email Id rather it creates an alias to exiting ID.
     1. Why Alais, as IMAP needs to poll right, for incoming mails? This is how it is engineered.
 3. Runs a background async service to poll IMAP server.
 4. As soon as mail is fetched, the target is identified and telegram message is sent.
@@ -136,5 +136,5 @@ I have tried to engineer this service to be reliable, in case if you find any is
 
 ### Credits
 ![TelegramAllTheThings](./telegram-group-all-the-things.jpg)
-Cant find one for the BOT. L0L
+Can't find one for the BOT. L0L
 
