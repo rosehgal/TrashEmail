@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 import io.github.trashemail.Configurations.EmailServerConfig;
 import io.github.trashemail.Configurations.TrashemailConfig;
+import io.github.trashemail.Telegram.DTO.TelegramResponse;
 import io.github.trashemail.utils.exceptions.EmailAliasNotCreatedExecption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,12 +44,13 @@ public class TelegramRequestHandler {
 				user.getEmailId();
 	}
 
-	public String handleRequest(long chatId, String text) {
+	public TelegramResponse handleRequest(long chatId, String text) {
 
 		String []strings = text.split(" ");
 
 		String command 	= "";
 		String argument = "";
+		String responseText = "";
 
 		if(strings.length >= 1)
 			command = strings[0];
@@ -57,13 +59,15 @@ public class TelegramRequestHandler {
 
 		switch(command){
 			case "/start":
-				return "Thanks for joining ...\n" +
+				responseText =  "Thanks for joining ...\n" +
 						"I am a disposable bot email id generator that can:\n" +
-						"1. Quickly generate a disposable email for you, no email management hassle \uD83D\uDE0B\t\n" +
+						"1. Quickly generate a disposable email for you," +
+						" no email management hassle \uD83D\uDE0B\t\n" +
 						"2. Quickly delete those emailIds\n" +
 						"3. Since I own, *trashemail.in*, *humblemail.com* & *thromail.com* " +
 						"your emailId will belong these domains\n" +
-						"4. I dont read anything, I respect your privacy. Any doubt? Audit my source code." +
+						"4. I dont read anything, I respect your privacy." +
+						"Any doubt? Audit my source code." +
 						"\n\n" +
 						"I am still a baby and learning.\n" +
 						"Do you have idea for addon? Please feel free to reach @ https://github.com/r0hi7/Trashemail" +
@@ -75,10 +79,21 @@ public class TelegramRequestHandler {
 						"* /help\n" +
 						"* /emails\n";
 
+				return new TelegramResponse(
+						chatId,
+						responseText
+				);
+
 			case "/create":
-				if(userRepository.findByChatId(chatId).size() >= trashemailConfig.getMaxEmailsPerUser())
-					return "Only "+trashemailConfig.getMaxEmailsPerUser()+" email Ids are allowed per-user\n" +
+				if(userRepository.findByChatId(chatId).size() >= trashemailConfig.getMaxEmailsPerUser()) {
+					responseText =  "Only " + trashemailConfig.getMaxEmailsPerUser() + " " +
+							"email Ids are allowed per-user\n" +
 							"You can get the list of all the emails @ /emails";
+					return new TelegramResponse(
+							chatId,
+							responseText
+						);
+				}
 
 				else{
 					// parse the argument and treat it as email id.
@@ -93,8 +108,12 @@ public class TelegramRequestHandler {
 						String emailId = argument;
 						if(userRepository.existsByEmailId(emailId)){
 							// Email ID Already taken
-							return "Email ID *" + argument + "* " +
+							responseText = "Email ID *" + argument + "* " +
 									"is already taken, please get some other";
+							return new TelegramResponse(
+									chatId,
+									responseText
+							);
 						}
 
 						User user = new User(chatId,
@@ -107,34 +126,61 @@ public class TelegramRequestHandler {
 							response = this.createEmail(user);
 
 						}catch (EmailAliasNotCreatedExecption emailAliasNotCreatedExecption){
-
 							log.error("Exception " + emailAliasNotCreatedExecption.getMessage());
-							return "Email address is already taken.\nPlease try something else.";
+							responseText = "Email address is already taken.\n" +
+									"Please try something else.";
+							return new TelegramResponse(
+									chatId,
+									responseText
+							);
 
 						}catch (HttpClientErrorException httpClientErrorException){
 
 							log.error("Exception " + httpClientErrorException.getMessage());
-							return "Email address is already taken.\nPlease try something else.";
+							responseText =  "Email address is already taken." +
+									"\nPlease try something else.";
+							return new TelegramResponse(
+									chatId,
+									responseText
+							);
 						}
 
 						if(response!=null) {
 							userRepository.save(user);
-							return "Email successfully created.";
+							responseText =  "Email successfully created.";
+							return new TelegramResponse(
+									chatId,
+									responseText
+							);
 						}
 
 						log.error(response);
-						return "Something bad just happened with me. Stay back till I get fixed.";
+						responseText = "Something bad just happened with me." +
+								"Stay back till I get fixed.";
+						return new TelegramResponse(
+								chatId,
+								responseText
+						);
 					}
 					else{
-						if(argument.isEmpty())
-							return "Please use command like /create <custom_name>@"+String.join("|", emailServerConfig.getHosts());
-
-						return "Email id should be of the form: `*@("+
+						if(argument.isEmpty()) {
+							responseText = "Please use command like " +
+									"/create <custom_name>@" + String.join("|", emailServerConfig.getHosts());
+							return new TelegramResponse(
+									chatId,
+									responseText
+							);
+						}
+						responseText = "Email id should be of the form: `*@("+
 								String.join("|", emailServerConfig.getHosts())+")`";
+						return new TelegramResponse(
+								chatId,
+								responseText
+						);
 					}
 				}
 			case "/help":
-				return "Create disposable email addresses to protect you against spam and newsletters." +
+				responseText = "Create disposable email addresses to protect you against spam and newsletters." +
 						"E-Mail forwarding made easy.\n" +
 						"I am open source and runs on open source services." +
 						"You can find my heart, soul and brain at: https://github.com/r0hi7/Trashemail\n\n"+
@@ -143,6 +189,10 @@ public class TelegramRequestHandler {
 						"/delete - If you are getting spams for any mail id, just delete it because it is disposable.\n" +
 						"/emails - Get the list of all the emailIds that belongs to you.\n" +
 						"/help - this help message.\n";
+				return new TelegramResponse(
+						chatId,
+						responseText
+				);
 
 			case "/emails":
 				String response = "Currently, you have below mentioned emails with you.\n*";
@@ -151,7 +201,10 @@ public class TelegramRequestHandler {
 					response += emailWithUser + "\n";
 				}
 				response+="*";
-				return response;
+				return new TelegramResponse(
+						chatId,
+						response
+				);
 
 			case "/delete":
 				String emailRegex = "^[A-Za-z0-9._%+-]+@("+
@@ -168,30 +221,51 @@ public class TelegramRequestHandler {
 					// user should only delete email owned by user.
 					if(userRepository.existsByEmailId(emailId)){
 						if(((Long)chatId).equals(user.getChatId())) {
-							return this.deleteEmail(user);
+							responseText = this.deleteEmail(user);
+							return new TelegramResponse(
+									chatId,
+									responseText
+							);
 						}
 					}
 					else{
-						return "*Email not registered to this user ..*";
+						responseText = "*Email not registered to this user ..*";
+						return new TelegramResponse(
+								chatId,
+								responseText
+						);
 					}
 
 				}
 				else{
-					if(argument.isEmpty())
-						return "Please use command like /delete <custom_name>@" + String.join("|", emailServerConfig.getHosts());
-
-					return "Email id should be of the form: `*@("+
+					if(argument.isEmpty()) {
+						responseText = "Please use command like /delete <custom_name>@" +
+								"" + String.join("|", emailServerConfig.getHosts());
+						return new TelegramResponse(
+								chatId,
+								responseText
+						);
+					}
+					responseText = "Email id should be of the form: `*@("+
 							String.join("|", emailServerConfig.getHosts())+")`";
+					return new TelegramResponse(
+							chatId,
+							responseText
+					);
 				}
 				break;
 
 			default:
-				return "I dont understand that ...\n " +
+				responseText = "I dont understand that ...\n " +
 						"I only understand few commands.\n" +
 						"1. /create <user>@("+ String.join("|", emailServerConfig.getHosts()) +")\n" +
 						"2. /delete emailId\n" +
 						"3. /help\n" +
 						"4. /emails\n";
+				return new TelegramResponse(
+						chatId,
+						responseText
+				);
 		}
 
 		return null;

@@ -25,7 +25,8 @@ public class TelegramResource {
     @PostMapping(value = "/new-message")
     public TelegramResponse messageHandler(@RequestBody TelegramRequest telegramRequest) {
     	
-    	String response = null;
+    	Object response = null;
+    	String responseText = null;
     	
     	try {
     		response = telegramRequestHandler.handleRequest(
@@ -34,18 +35,16 @@ public class TelegramResource {
     		);
     	}
     	catch(HttpClientErrorException httpClientException) {
-    		response = httpClientException.getMessage();
+    		responseText = httpClientException.getMessage();
     	}catch(Exception e){
     		e.printStackTrace();
     		log.error(e.getMessage());
     		return new TelegramResponse(
     			1,
-				"Unprocessed"
+				responseText
 			);
 		}
     	
-    	return new TelegramResponse(
-    		telegramRequest.getMessage().getChat().getId(),
-    		response);
+    	return (TelegramResponse) response;
     }
 }
