@@ -1,11 +1,10 @@
 package io.github.trashemail.utils;
 
+import io.github.trashemail.Telegram.ForwardMailsToTelegram;
+import org.apache.commons.mail.util.MimeMessageParser;
 import javax.mail.Address;
-import javax.mail.BodyPart;
 import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMultipart;
-import java.io.IOException;
+import javax.mail.internet.MimeMessage;
 import java.util.Date;
 
 public class MailParser {
@@ -15,7 +14,7 @@ public class MailParser {
     private String content;
     private Date date;
 
-    public MailParser(Message message) throws MessagingException, IOException {
+    public MailParser(Message message) throws Exception {
         this.content="";
         this.from="";
         this.to="";
@@ -27,8 +26,22 @@ public class MailParser {
             this.to += a.toString() + ", ";
 
         this.subject = message.getSubject();
-        this.content = this.getTextFromMessage(message);
-        this.date    = message.getSentDate();
+        MimeMessageParser messageParser = new MimeMessageParser((MimeMessage) message);
+        messageParser.parse();
+
+        // This block is to check whether mail contains plain text or html entities
+        // In case of html, with hasHtmlContent(), hasPlainContent() is also giving true, hence two conditions
+        // Also, getPlainContent().isEmpty() is to confirm that mail has html entities,
+        if (messageParser.hasPlainContent() && !messageParser.hasHtmlContent()){
+            this.content = messageParser.getPlainContent();
+        } else {
+            if (messageParser.getPlainContent().isEmpty()) {
+                this.content = org.jsoup.Jsoup.parse(messageParser.getHtmlContent()).text();
+            } else{
+                this.content = messageParser.getPlainContent();
+            }
+        }
+        this.date = message.getSentDate();
 
     }
 
@@ -50,35 +63,5 @@ public class MailParser {
         );
 
         return mailData;
-    }
-
-    private String getTextFromMessage(Message message) throws MessagingException, IOException {
-        String result = "";
-        if (message.isMimeType("text/plain")) {
-            result = message.getContent().toString();
-        } else if (message.isMimeType("multipart/*")) {
-            MimeMultipart mimeMultipart = (MimeMultipart) message.getContent();
-            result = getTextFromMimeMultipart(mimeMultipart);
-        }
-        return result;
-    }
-
-    private String getTextFromMimeMultipart(
-            MimeMultipart mimeMultipart)  throws MessagingException, IOException{
-        String result = "";
-        int count = mimeMultipart.getCount();
-        for (int i = 0; i < count; i++) {
-            BodyPart bodyPart = mimeMultipart.getBodyPart(i);
-            if (bodyPart.isMimeType("text/plain")) {
-                result = result + "\n" + bodyPart.getContent();
-                break;
-            } else if (bodyPart.isMimeType("text/html")) {
-                String html = (String) bodyPart.getContent();
-                result = result + "\n" + org.jsoup.Jsoup.parse(html).text();
-            } else if (bodyPart.getContent() instanceof MimeMultipart){
-                result = result + getTextFromMimeMultipart((MimeMultipart)bodyPart.getContent());
-            }
-        }
-        return result;
     }
 }
