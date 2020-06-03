@@ -10,7 +10,6 @@ package io.github.trashemail.Telegram.DTO;
 Detailed explanation of how Telegram response might look like as message : https://core.telegram.org/bots/api#message
  */
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.trashemail.Telegram.DTO.messageEntities.InlineKeyboardMarkup;
@@ -74,5 +73,16 @@ public class TelegramResponse {
                 text,
                 "Markdown",
                 inlineKeyboardMarkup);
+    }
+
+    @Override
+    public String toString() {
+        return "TelegramResponse{" +
+                "method='" + method + '\'' +
+                ", chat_id=" + chat_id +
+                ", text='" + text + '\'' +
+                ", parse_mode='" + parse_mode + '\'' +
+                ", inlineKeyboardMarkup=" + inlineKeyboardMarkup +
+                '}';
     }
 }

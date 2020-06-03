@@ -20,4 +20,11 @@ public class InlineKeyboardMarkup {
     public List<List<InlineKeyboardButton>> getInlineKeyboardButtonList() {
         return inlineKeyboardButtonList;
     }
+
+    @Override
+    public String toString() {
+        return "InlineKeyboardMarkup{" +
+                "inlineKeyboardButtonList=" + inlineKeyboardButtonList +
+                '}';
+    }
 }

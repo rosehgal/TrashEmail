@@ -13,4 +13,15 @@ public class Chat {
 	private String last_name;
 	private String username;
 	private String type;
+
+	@Override
+	public String toString() {
+		return "Chat{" +
+				"id=" + id +
+				", first_name='" + first_name + '\'' +
+				", last_name='" + last_name + '\'' +
+				", username='" + username + '\'' +
+				", type='" + type + '\'' +
+				'}';
+	}
 }

@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -12,10 +13,25 @@ import java.util.Date;
 public class Message {
 	private long message_id;
 
-	private From from;
+	private User from;
 	private Chat chat;
 
 	private Date date;
 	private String text;
 
+	private List<MessageEntity> entities;
+	private InlineKeyboardMarkup reply_markup;
+
+	@Override
+	public String toString() {
+		return "Message{" +
+				"message_id=" + message_id +
+				", from=" + from +
+				", chat=" + chat +
+				", date=" + date +
+				", text='" + text + '\'' +
+				", entities=" + entities +
+				", reply_markup=" + reply_markup +
+				'}';
+	}
 }

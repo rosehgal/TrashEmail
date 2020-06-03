@@ -12,5 +12,13 @@ https://core.telegram.org/bots/api#inlinekeyboardbutton
 @NoArgsConstructor
 public class InlineKeyboardButton {
     private String text;
-    private String url;
+    private String callback_data;
+
+    @Override
+    public String toString() {
+        return "InlineKeyboardButton{" +
+                "text='" + text + '\'' +
+                ", callback_data='" + callback_data + '\'' +
+                '}';
+    }
 }

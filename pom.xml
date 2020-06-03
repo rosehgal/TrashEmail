@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>io.github</groupId>
 	<artifactId>trashemail</artifactId>
-	<version>1.1.0</version>
+	<version>1.1.1</version>
 	<name>Trashemail</name>
 	<description>Springboot miscroservice - heart of Telegram @trashemail_bot</description>
 	<distributionManagement>

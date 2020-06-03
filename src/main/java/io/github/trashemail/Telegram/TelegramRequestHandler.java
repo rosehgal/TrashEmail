@@ -1,5 +1,6 @@
 package io.github.trashemail.Telegram;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -7,6 +8,8 @@ import java.util.regex.Pattern;
 import io.github.trashemail.Configurations.EmailServerConfig;
 import io.github.trashemail.Configurations.TrashemailConfig;
 import io.github.trashemail.Telegram.DTO.TelegramResponse;
+import io.github.trashemail.Telegram.DTO.messageEntities.InlineKeyboardButton;
+import io.github.trashemail.Telegram.DTO.messageEntities.InlineKeyboardMarkup;
 import io.github.trashemail.utils.exceptions.EmailAliasNotCreatedExecption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,10 +49,10 @@ public class TelegramRequestHandler {
 
 	public TelegramResponse handleRequest(long chatId, String text) {
 
-		String []strings = text.split(" ");
+		String []strings = text.split("\\s+");
 
-		String command 	= "";
-		String argument = "";
+		String command 	= null;
+		String argument = null;
 		String responseText = "";
 
 		if(strings.length >= 1)
@@ -96,89 +99,136 @@ public class TelegramRequestHandler {
 				}
 
 				else{
-					// parse the argument and treat it as email id.
-					String emailRegex = "^[A-Za-z0-9._%+-]+@(" +
-										String.join("|", emailServerConfig.getHosts()) +")$";
+					if(argument != null) {
+							/*
+							User entered something like : /create username.
+							No offer him interactive response.
+							*/
+						String emailRegex = "^[A-Za-z0-9._%+-]+@(" +
+								String.join("|", emailServerConfig.getHosts()) +")$";
 
-					Pattern pattern = Pattern.compile(emailRegex);
-					Matcher matcher = pattern.matcher(argument);
+						Pattern pattern = Pattern.compile(emailRegex);
+						Matcher matcher = pattern.matcher(argument);
 
-					// A valid domain email is inputted by the user
-					if (matcher.matches()) {
-						String emailId = argument;
-						if(userRepository.existsByEmailId(emailId)){
-							// Email ID Already taken
-							responseText = "Email ID *" + argument + "* " +
-									"is already taken, please get some other";
+						// A valid domain email is inputted by the user
+						if (matcher.matches()) {
+							String emailId = argument;
+							if(userRepository.existsByEmailId(emailId)){
+								// Email ID Already taken
+								responseText = "Email ID *" + argument + "* " +
+										"is already taken, please get some other";
+								return new TelegramResponse(
+										chatId,
+										responseText
+								);
+							}
+
+							User user = new User(chatId,
+									emailId,
+									emailServerConfig.getImap().getEmail());
+
+							String response = null;
+							try {
+
+								response = this.createEmail(user);
+
+							}catch (EmailAliasNotCreatedExecption emailAliasNotCreatedExecption){
+								log.error("Exception " + emailAliasNotCreatedExecption.getMessage());
+								responseText = "Email address is already taken.\n" +
+										"Please try something else.";
+								return new TelegramResponse(
+										chatId,
+										responseText
+								);
+
+							}catch (HttpClientErrorException httpClientErrorException){
+
+								log.error("Exception " + httpClientErrorException.getMessage());
+								responseText =  "Email address is already taken." +
+										"\nPlease try something else.";
+								return new TelegramResponse(
+										chatId,
+										responseText
+								);
+							}
+
+							if(response!=null) {
+								userRepository.save(user);
+								responseText =  "Email successfully created - *"+argument+"*" +
+										"\n See all your emails @ /emails";
+
+								return new TelegramResponse(
+										chatId,
+										responseText
+								);
+							}
+
+							log.error(response);
+							responseText = "Something bad just happened with me." +
+									"Stay back till I get fixed.";
 							return new TelegramResponse(
 									chatId,
 									responseText
 							);
 						}
+						else if(!matcher.matches()){
 
-						User user = new User(chatId,
-								   			 emailId,
-											 emailServerConfig.getImap().getEmail());
+							if (argument.contains("@") || argument.contains("-")) {
+								responseText = "EmailId contains illegal chars.";
+								return new TelegramResponse(
+										chatId,
+										responseText
+								);
+							}
 
-						String response = null;
-						try {
+							responseText = "Pick a domain for the emailId: *"+argument+"*";
+							List<String> emailsHosts = emailServerConfig.getHosts();
 
-							response = this.createEmail(user);
+							int buttonPerRow = 2;
+							int buttonsRow = (int) Math.ceil((double)emailsHosts.size()/buttonPerRow);
+							List<List<InlineKeyboardButton>> buttonList = new ArrayList<>(buttonsRow);
+							for(int i=0;i<buttonsRow;++i)
+								buttonList.add(new ArrayList<>());
 
-						}catch (EmailAliasNotCreatedExecption emailAliasNotCreatedExecption){
-							log.error("Exception " + emailAliasNotCreatedExecption.getMessage());
-							responseText = "Email address is already taken.\n" +
-									"Please try something else.";
+							InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+
+
+							for(int i=0; i < emailsHosts.size(); ++i){
+								InlineKeyboardButton btn = new InlineKeyboardButton();
+								btn.setText(emailsHosts.get(i));
+								btn.setCallback_data("/create " + argument + "@"+ emailsHosts.get(i));
+
+								buttonList.get(i / buttonPerRow).add(btn);
+							}
+
+							inlineKeyboardMarkup.setInlineKeyboardButtonList(buttonList);
+
 							return new TelegramResponse(
 									chatId,
-									responseText
+									responseText,
+									inlineKeyboardMarkup
 							);
 
-						}catch (HttpClientErrorException httpClientErrorException){
-
-							log.error("Exception " + httpClientErrorException.getMessage());
-							responseText =  "Email address is already taken." +
-									"\nPlease try something else.";
-							return new TelegramResponse(
-									chatId,
-									responseText
-							);
 						}
-
-						if(response!=null) {
-							userRepository.save(user);
-							responseText =  "Email successfully created.";
-							return new TelegramResponse(
-									chatId,
-									responseText
-							);
-						}
-
-						log.error(response);
-						responseText = "Something bad just happened with me." +
-								"Stay back till I get fixed.";
+					}
+					else if(argument == null) {
+						// Setup interactive with inline keyboard messages.
+						responseText = "Please use command like " +
+								"/create username";
 						return new TelegramResponse(
 								chatId,
 								responseText
 						);
 					}
-					else{
-						if(argument.isEmpty()) {
-							responseText = "Please use command like " +
-									"/create <custom_name>@" + String.join("|", emailServerConfig.getHosts());
-							return new TelegramResponse(
-									chatId,
-									responseText
-							);
-						}
-						responseText = "Email id should be of the form: `*@("+
-								String.join("|", emailServerConfig.getHosts())+")`";
-						return new TelegramResponse(
-								chatId,
-								responseText
-						);
-					}
+
+					responseText = "Email id should be of the form: `*@("+
+							String.join("|", emailServerConfig.getHosts())+")`";
+					return new TelegramResponse(
+							chatId,
+							responseText
+					);
 				}
+
 			case "/help":
 				responseText = "Create disposable email addresses to protect you against spam and newsletters." +
 						"E-Mail forwarding made easy.\n" +
@@ -207,52 +257,81 @@ public class TelegramRequestHandler {
 				);
 
 			case "/delete":
-				String emailRegex = "^[A-Za-z0-9._%+-]+@("+
-						String.join("|", emailServerConfig.getHosts())+
-						")$";
+				if(argument == null){
+					responseText = "Pick an email to delete.";
 
-				Pattern pattern = Pattern.compile(emailRegex);
-				Matcher matcher = pattern.matcher(argument);
+					List<User> emailsWithUser = userRepository.findByChatId(chatId);
 
-				// A valid domain email is inputted by the user
-				if (matcher.matches()) {
-					String emailId = argument;
-					User user = userRepository.findByEmailId(emailId);
-					// user should only delete email owned by user.
-					if(userRepository.existsByEmailId(emailId)){
-						if(((Long)chatId).equals(user.getChatId())) {
-							responseText = this.deleteEmail(user);
+					int buttonPerRow = 1;
+					int buttonsRow = (int) Math.ceil((double)emailsWithUser.size()/buttonPerRow);
+					List<List<InlineKeyboardButton>> buttonList = new ArrayList<>(buttonsRow);
+					for(int i=0;i<buttonsRow;++i)
+						buttonList.add(new ArrayList<>());
+
+					InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+
+					for(int i=0; i < emailsWithUser.size(); ++i){
+						InlineKeyboardButton btn = new InlineKeyboardButton();
+						btn.setText(emailsWithUser.get(i).toString());
+						btn.setCallback_data("/delete " + emailsWithUser.get(i).toString());
+
+						buttonList.get(i / buttonPerRow).add(btn);
+					}
+
+					inlineKeyboardMarkup.setInlineKeyboardButtonList(buttonList);
+					return new TelegramResponse(
+							chatId,
+							responseText,
+							inlineKeyboardMarkup
+					);
+				}
+				else {
+					String emailRegex = "^[A-Za-z0-9._%+-]+@(" +
+							String.join("|", emailServerConfig.getHosts()) +
+							")$";
+
+					Pattern pattern = Pattern.compile(emailRegex);
+					Matcher matcher = pattern.matcher(argument);
+
+					// A valid domain email is inputted by the user
+					if (matcher.matches()) {
+						String emailId = argument;
+						User user = userRepository.findByEmailId(emailId);
+						// user should only delete email owned by user.
+						if (userRepository.existsByEmailId(emailId)) {
+							if (((Long) chatId).equals(user.getChatId())) {
+								responseText = this.deleteEmail(user);
+								return new TelegramResponse(
+										chatId,
+										responseText
+								);
+							}
+						} else {
+							responseText = "*Email not registered to this user ..*";
 							return new TelegramResponse(
 									chatId,
 									responseText
 							);
 						}
-					}
-					else{
-						responseText = "*Email not registered to this user ..*";
-						return new TelegramResponse(
-								chatId,
-								responseText
-						);
-					}
 
-				}
-				else{
-					if(argument.isEmpty()) {
-						responseText = "Please use command like /delete <custom_name>@" +
-								"" + String.join("|", emailServerConfig.getHosts());
+					} else {
+						if (argument.isEmpty()) {
+							responseText = "Please use command like /delete <custom_name>@" +
+									"" + String.join("|", emailServerConfig.getHosts());
+							return new TelegramResponse(
+									chatId,
+									responseText
+							);
+						}
+						responseText = "Email id should be of the form: `*@(" +
+								String.join("|", emailServerConfig.getHosts()) + ")`";
 						return new TelegramResponse(
 								chatId,
 								responseText
 						);
 					}
-					responseText = "Email id should be of the form: `*@("+
-							String.join("|", emailServerConfig.getHosts())+")`";
-					return new TelegramResponse(
-							chatId,
-							responseText
-					);
 				}
+
 				break;
 
 			default:

@@ -1,5 +1,7 @@
 package io.github.trashemail.Telegram.DTO;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import io.github.trashemail.Telegram.DTO.messageEntities.CallbackQuery;
 import io.github.trashemail.Telegram.DTO.messageEntities.Message;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,9 +31,22 @@ import lombok.Setter;
 		"text": "Hi"
 	}
 }
+
  */
-@Getter @Setter @NoArgsConstructor
-public class TelegramRequest {
+@Getter
+@Setter
+@NoArgsConstructor
+public class TelegramMessageRequest {
     private long update_id;
-    private Message message;
+    private JsonNode message;
+    private JsonNode callbck_query;
+
+    @Override
+    public String toString() {
+        return "TelegramMessageRequest{" +
+                "update_id=" + update_id +
+                ", message=" + message +
+                ", callbck_query=" + callbck_query +
+                '}';
+    }
 }
