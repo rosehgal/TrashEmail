@@ -17,13 +17,15 @@ public class ForwardMailsToTelegram {
     @Autowired
     private SendTelegramMessage sendTelegramMessage;
 
-    private static final Logger log = LoggerFactory.getLogger(ForwardMailsToTelegram.class);
+    private static final Logger log = LoggerFactory.getLogger(
+            ForwardMailsToTelegram.class);
 
     public void sendToTelegram(Message message) throws Exception {
         String emailFor = message.getAllRecipients()[0].toString();
         User user = userRepository.findByEmailId(emailFor);
         MailParser parsedMail = new MailParser(message);
 
-        sendTelegramMessage.sendMessage(parsedMail.toString(), Long.toString(user.getChatId()));
+        sendTelegramMessage.sendMessage(parsedMail.toString(),
+                                        Long.toString(user.getChatId()));
     }
 }

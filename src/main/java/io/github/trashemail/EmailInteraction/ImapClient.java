@@ -42,14 +42,14 @@ public class ImapClient {
 
     @Async("threadPoolTaskExecutor")
     public void fetchNewEmails() throws Exception {
-        Properties properties = new Properties();
-        properties.put("mail.store.protocol", "imaps");
-        properties.put("mail.imaps.host", emailServerConfig.getImap().getHost());
-        properties.put("mail.imaps.port", emailServerConfig.getImap().getPort());
-        properties.put("mail.imaps.timeout", "10000");
-        properties.put("mail.imaps.ssl.protocols", "TLSv1.2");
+        Properties mailProps = new Properties();
+        mailProps.put("mail.store.protocol", "imaps");
+        mailProps.put("mail.imaps.host", emailServerConfig.getImap().getHost());
+        mailProps.put("mail.imaps.port", emailServerConfig.getImap().getPort());
+        mailProps.put("mail.imaps.timeout", "10000");
+        mailProps.put("mail.imaps.ssl.protocols", "TLSv1.2");
 
-        Session session = Session.getInstance(properties);
+        Session session = Session.getInstance(mailProps);
         IMAPStore store = null;
         Folder inbox = null;
 
@@ -112,7 +112,7 @@ public class ImapClient {
             while (running) {
                 try {
                     ensureOpen(folder);
-                    log.info("IMAP client entering into IDLE Listening state ...");
+                    log.info("IMAP client: IDLE Listening state ...");
                     ((IMAPFolder) folder).idle();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -146,7 +146,8 @@ public class ImapClient {
 
     }
 
-    public static void ensureOpen(final Folder folder) throws MessagingException {
+    public static void ensureOpen(final Folder folder)
+    throws MessagingException {
 
         if (folder != null) {
             Store store = folder.getStore();
@@ -157,11 +158,13 @@ public class ImapClient {
             throw new MessagingException("Unable to open a null folder");
         }
 
-        if (folder.exists() && !folder.isOpen() && (folder.getType() & Folder.HOLDS_MESSAGES) != 0) {
+        if (folder.exists() && !folder.isOpen() && (folder.getType() &
+                Folder.HOLDS_MESSAGES) != 0) {
             log.info("Opening folder " + folder.getFullName());
             folder.open(Folder.READ_ONLY);
             if (!folder.isOpen())
-                throw new MessagingException("Unable to open folder " + folder.getFullName());
+                throw new MessagingException("Unable to open folder " +
+                                                     folder.getFullName());
         }
 
     }

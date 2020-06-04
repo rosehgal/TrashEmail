@@ -7,7 +7,8 @@ package io.github.trashemail.Telegram.DTO;
     "text": "text"
 }
 
-Detailed explanation of how Telegram response might look like as message : https://core.telegram.org/bots/api#message
+Detailed explanation of how Telegram response might look like as message :
+https://core.telegram.org/bots/api#message
  */
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -33,7 +34,8 @@ public class TelegramResponse {
         return inlineKeyboardMarkup;
     }
 
-    public TelegramResponse(String method, long chat_id, String text, String parse_mode,
+    public TelegramResponse(String method, long chat_id, String text,
+                            String parse_mode,
                             InlineKeyboardMarkup inlineKeyboardMarkup) {
         this.method = method;
         this.chat_id = chat_id;
@@ -58,7 +60,8 @@ public class TelegramResponse {
                 null);
     }
 
-    public TelegramResponse(String method, long chat_id, String text, String parse_mode){
+    public TelegramResponse(String method, long chat_id, String text,
+                            String parse_mode){
         this(method,
                 chat_id,
                 text,

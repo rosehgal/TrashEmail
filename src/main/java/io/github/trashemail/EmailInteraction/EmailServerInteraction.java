@@ -24,9 +24,11 @@ public class EmailServerInteraction {
 	@Autowired
 	RestTemplate restTemplate;
 
-	private static final Logger log = LoggerFactory.getLogger(EmailServerInteraction.class);
+	private static final Logger log = LoggerFactory.getLogger(
+			EmailServerInteraction.class);
 
-	public String createEmailId(User user) throws HttpClientErrorException, EmailAliasNotCreatedExecption {
+	public String createEmailId(User user)
+	throws HttpClientErrorException, EmailAliasNotCreatedExecption {
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setBasicAuth(
@@ -40,7 +42,8 @@ public class EmailServerInteraction {
 		data.add("address", user.getEmailId());
 		data.add("forwards_to", emailServerConfig.getImap().getEmail());
 		
-		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(data, headers);
+		HttpEntity<MultiValueMap<String, String>> request =
+				new HttpEntity<MultiValueMap<String, String>>(data, headers);
 
 		ResponseEntity response = restTemplate.postForEntity(
 			emailServerConfig.getAddUrl(),
@@ -68,7 +71,8 @@ public class EmailServerInteraction {
 
 		data.add("address", user.getEmailId());
 
-		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(data, headers);
+		HttpEntity<MultiValueMap<String, String>> request =
+				new HttpEntity<MultiValueMap<String, String>>(data, headers);
 
 		RestTemplate restTemplate = new RestTemplate();
 		ResponseEntity response = restTemplate.postForEntity(

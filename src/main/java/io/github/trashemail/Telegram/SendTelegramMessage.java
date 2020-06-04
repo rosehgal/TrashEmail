@@ -1,6 +1,6 @@
 package io.github.trashemail.Telegram;
 
-import io.github.trashemail.Configurations.TelegramConfg;
+import io.github.trashemail.Configurations.TelegramConfig;
 
 import java.util.ArrayList;
 
@@ -19,27 +19,30 @@ import org.springframework.web.client.RestTemplate;
 @EnableAsync
 public class SendTelegramMessage {
     @Autowired
-    private TelegramConfg telegramConfg;
+    private TelegramConfig telegramConfig;
     
     @Autowired
     RestTemplate restTemplate;
 
-    private static final Logger log = LoggerFactory.getLogger(SendTelegramMessage.class);
+    private static final Logger log = LoggerFactory.getLogger(
+            SendTelegramMessage.class);
 
     @Async
     public void sendMessage(String message, String chatId){
-        String telegramURI = telegramConfg.getUrl() +
-                             telegramConfg.getBotToken() +
+        String telegramURI = telegramConfig.getUrl() +
+                             telegramConfig.getBotToken() +
                              "/sendMessage";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         
         // Checking the message size and do splitting into chunks if required
-        int maxMessageSize = telegramConfg.getSize();
+        int maxMessageSize = telegramConfig.getSize();
         ArrayList<String> split = new ArrayList<>();
         for (int i = 0; i <= message.length() / maxMessageSize; i++) {
-        	split.add(message.substring(i * maxMessageSize, Math.min((i + 1) * maxMessageSize, message.length())));
+        	split.add(message.substring(i * maxMessageSize,
+                                        Math.min((i + 1) * maxMessageSize,
+                                                 message.length())));
         }
 
         for (int i = 0; i < split.size(); i++) {
@@ -47,7 +50,9 @@ public class SendTelegramMessage {
         	data.add("chat_id", chatId);
         	data.add("text", split.get(i));
 
-        	HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(data, headers);
+        	HttpEntity<MultiValueMap<String, String>> request =
+                    new HttpEntity<MultiValueMap<String, String>>(data,
+                                                                  headers);
 
         	ResponseEntity response = restTemplate.postForEntity(
         			telegramURI,

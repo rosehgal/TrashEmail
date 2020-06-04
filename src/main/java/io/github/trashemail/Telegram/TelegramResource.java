@@ -23,21 +23,26 @@ public class TelegramResource {
 	@Autowired
 	SendTelegramMessage sendTelegramMessage;
 
-	private static final Logger log = LoggerFactory.getLogger(TelegramResource.class);
+	private static final Logger log = LoggerFactory.getLogger(
+			TelegramResource.class);
 
     @PostMapping(value = "/new-message")
-    public TelegramResponse messageHandler(@RequestBody JsonNode telegramMessageRequest) {
+    public TelegramResponse messageHandler(
+    		@RequestBody JsonNode telegramMessageRequest) {
     	
     	Object response = null;
     	String responseText = null;
 		ObjectMapper objectMapper = new ObjectMapper();
 
 		try {
-			JsonNode jsonCallbackQueryNode = telegramMessageRequest.get("callback_query");
+			JsonNode jsonCallbackQueryNode =
+					telegramMessageRequest.get("callback_query");
 
 			// This request is callback message or edited message.
 			if(jsonCallbackQueryNode != null){
-				CallbackQuery callbackQuery = objectMapper.convertValue(jsonCallbackQueryNode, CallbackQuery.class);
+				CallbackQuery callbackQuery =
+						objectMapper.convertValue(jsonCallbackQueryNode,
+												  CallbackQuery.class);
 				// Process callback Query data.
 				response = telegramRequestHandler.handleRequest(
 						callbackQuery.getFrom().getId(),
@@ -50,7 +55,8 @@ public class TelegramResource {
 				JsonNode jsonMessageNode = telegramMessageRequest.get("message");
 				if(jsonMessageNode != null) {
 					// this is surely a message/
-					Message message = objectMapper.convertValue(jsonMessageNode, Message.class);
+					Message message = objectMapper.convertValue(
+							jsonMessageNode, Message.class);
 					// Process message and respond.
 					response = telegramRequestHandler.handleRequest(
 							message.getChat().getId(),
@@ -63,6 +69,10 @@ public class TelegramResource {
     	}
     	catch(HttpClientErrorException httpClientException) {
     		responseText = httpClientException.getMessage();
+			return new TelegramResponse(
+					1,
+					responseText
+			);
     	}catch(Exception e){
     		e.printStackTrace();
     		log.error(e.getMessage());
