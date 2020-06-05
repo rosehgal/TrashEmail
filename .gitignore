@@ -13,6 +13,7 @@ src/main/resources/application.yml
 *.db
 lib/
 bin/
+*.html
 
 ### STS ###
 .apt_generated

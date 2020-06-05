@@ -110,7 +110,6 @@ public class MailParser {
                 this.subject,
                 this.content
         );
-
         return mailData;
     }
 }

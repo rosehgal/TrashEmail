@@ -11,14 +11,18 @@ https://core.telegram.org/bots/api#inlinekeyboardbutton
 @Setter
 @NoArgsConstructor
 public class InlineKeyboardButton {
+    /*
+    According the docs, either of callback_data or uri, only one should be set.
+    */
     private String text;
     private String callback_data;
+    private String url;
 
-    @Override
-    public String toString() {
+    @Override public String toString() {
         return "InlineKeyboardButton{" +
                 "text='" + text + '\'' +
                 ", callback_data='" + callback_data + '\'' +
+                ", url='" + url + '\'' +
                 '}';
     }
 }
