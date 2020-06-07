@@ -30,7 +30,7 @@ public class ForwardMailsToTelegram {
 
         /*
         If html content is set, offer to save in file and show html link.
-         */
+        */
         if(parsedMail.getHtmlContentSet()){
             Object filename = saveMailToHTMLFile.saveToFile(
                     parsedMail.getHtmlContent()
@@ -39,20 +39,18 @@ public class ForwardMailsToTelegram {
             if (filename != null)
                 sendTelegramMessage.sendMessage(
                         parsedMail.toString(),
-                        Long.toString(user.getChatId()),
+                        user.getChatId(),
                         (String) filename
                 );
             else {
                 sendTelegramMessage.sendMessage(parsedMail.toString(),
-                                                Long.toString(
-                                                        user.getChatId()
-                                                )
+                                                user.getChatId()
                 );
             }
         }
         else {
           sendTelegramMessage.sendMessage(parsedMail.toString(),
-                                          Long.toString(user.getChatId()));
+                                          user.getChatId());
             }
     }
 }

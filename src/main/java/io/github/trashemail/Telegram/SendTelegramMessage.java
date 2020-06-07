@@ -1,10 +1,6 @@
 package io.github.trashemail.Telegram;
 
 import io.github.trashemail.Configurations.TelegramConfig;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import io.github.trashemail.Configurations.TrashemailConfig;
 import io.github.trashemail.Telegram.DTO.TelegramResponse;
 import io.github.trashemail.Telegram.DTO.messageEntities.InlineKeyboardButton;
@@ -12,13 +8,15 @@ import io.github.trashemail.Telegram.DTO.messageEntities.InlineKeyboardMarkup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @EnableAsync
@@ -34,56 +32,10 @@ public class SendTelegramMessage {
     private static final Logger log = LoggerFactory.getLogger(
             SendTelegramMessage.class);
 
-    @Async
-    public void sendMessage(String message, String chatId){
-        String telegramURI = telegramConfig.getUrl() +
-                             telegramConfig.getBotToken() +
-                             "/sendMessage";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        
-        // Checking the message size and do splitting into chunks if required
-        int maxMessageSize = telegramConfig.getSize();
-        ArrayList<String> split = new ArrayList<>();
-        for (int i = 0; i <= message.length() / maxMessageSize; i++) {
-        	split.add(message.substring(i * maxMessageSize,
-                                        Math.min((i + 1) * maxMessageSize,
-                                                 message.length())));
-        }
-
-        for (int i = 0; i < split.size(); i++) {
-        	MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
-        	data.add("chat_id", chatId);
-        	data.add("text", split.get(i));
-
-        	HttpEntity<MultiValueMap<String, String>> request =
-                    new HttpEntity<MultiValueMap<String, String>>(data, headers);
-
-        	ResponseEntity response = restTemplate.postForEntity(
-        			telegramURI,
-        			request,
-        			String.class);
-
-        	if(response.getStatusCode() == HttpStatus.OK){
-        		log.debug("Message sent to user: " + chatId);
-        	}
-        	else
-        		log.error("Unable to send message to user: " + chatId);
-        }
-
-    }
-
-    @Async
-    public void sendMessage(String message, String chatId, String filename){
-        String telegramURI = telegramConfig.getUrl() +
-                telegramConfig.getBotToken() +
-                "/sendMessage";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        // Checking the message size and do splitting into chunks if required
+    public ArrayList<String> chunks(String message){
+        /*
+        Checking the message size and do splitting into chunks if required
+        */
         int maxMessageSize = telegramConfig.getSize();
         ArrayList<String> split = new ArrayList<>();
         for (int i = 0; i <= message.length() / maxMessageSize; i++) {
@@ -91,60 +43,74 @@ public class SendTelegramMessage {
                                         Math.min((i + 1) * maxMessageSize,
                                                  message.length())));
         }
+        return split;
+    }
 
-        for (int i = 0; i < split.size(); i++) {
-            MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
-            data.add("chat_id", chatId);
-            data.add("text", split.get(i));
+    @Async
+    public void sendMessage(String message, long chatId){
+        this.sendMessage(
+                message,
+                chatId,
+                null
+        );
+    }
 
-            HttpEntity<MultiValueMap<String, String>> request =
-                    new HttpEntity<MultiValueMap<String, String>>(data, headers);
+    @Async
+    public void sendMessage(String message, long chatId, String filename) {
+        String telegramURI = telegramConfig.getUrl() +
+                telegramConfig.getBotToken() +
+                "/sendMessage";
+
+        ArrayList<String> messageChunks = chunks(message);
+        for (int i = 0; i < messageChunks.size(); i++) {
+            TelegramResponse request = new TelegramResponse(
+                    chatId,
+                    messageChunks.get(i));
 
             ResponseEntity response = restTemplate.postForEntity(
                     telegramURI,
                     request,
-                    String.class);
+                    TelegramResponse.class);
 
-            if(response.getStatusCode() == HttpStatus.OK){
+            if (response.getStatusCode() == HttpStatus.OK) {
                 log.debug("Message sent to user: " + chatId);
             }
             else
                 log.error("Unable to send message to user: " + chatId);
         }
 
-        // send the response with html button
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        if (filename != null) {
+            /*
+            Send HTML button back to user if everything is good with filename.
+            */
+            InlineKeyboardMarkup markupKeyboard = new InlineKeyboardMarkup();
 
-        InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
-        inlineKeyboardButton.setText("HTML version");
-        inlineKeyboardButton.setUrl(
-                trashemailConfig.getHostURI() + filename
-        );
+            InlineKeyboardButton keyboardButton = new InlineKeyboardButton();
+            keyboardButton.setText("HTML version");
+            keyboardButton.setUrl(trashemailConfig.getHostURI() + filename);
 
-        List<List<InlineKeyboardButton>> inlineKeyboardButtonList =
-                new ArrayList<>();
+            List<List<InlineKeyboardButton>> buttonList = new ArrayList<>();
 
-        inlineKeyboardButtonList.add(new ArrayList<>());
-        inlineKeyboardButtonList.get(0).add(inlineKeyboardButton);
+            buttonList.add(new ArrayList<>());
+            buttonList.get(0).add(keyboardButton);
 
-        inlineKeyboardMarkup.setInlineKeyboardButtonList(
-                inlineKeyboardButtonList);
+            markupKeyboard.setInlineKeyboardButtonList(buttonList);
 
-        TelegramResponse telegramResponse = new TelegramResponse(
-                Long.parseLong(chatId),
-                "To view in HTML format click the link below.",
-                inlineKeyboardMarkup
-        );
+            TelegramResponse telegramResponse =
+                new TelegramResponse(
+                    chatId,
+                    "To view in HTML format click the link below.",
+                    markupKeyboard);
 
-        ResponseEntity response = restTemplate.postForEntity(
-                telegramURI,
-                telegramResponse,
-                TelegramResponse.class
-        );
-        if(response.getStatusCode() == HttpStatus.OK){
-            log.debug("HTML link sent to user: " + chatId + filename);
+            ResponseEntity response = restTemplate.postForEntity(
+                    telegramURI,
+                    telegramResponse,
+                    TelegramResponse.class);
+
+            if (response.getStatusCode() == HttpStatus.OK) {
+                log.debug("HTML link sent to user: " + chatId + filename);
+            }
+            else log.error("Unable to HTML Link to user: " + chatId + filename);
         }
-        else
-            log.error("Unable to HTML Link to user: " + chatId + filename);
     }
 }
