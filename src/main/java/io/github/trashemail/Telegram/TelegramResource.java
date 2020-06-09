@@ -2,31 +2,31 @@ package io.github.trashemail.Telegram;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.trashemail.Respositories.UserRepository;
 import io.github.trashemail.Telegram.DTO.TelegramResponse;
 import io.github.trashemail.Telegram.DTO.messageEntities.CallbackQuery;
 import io.github.trashemail.Telegram.DTO.messageEntities.Message;
+import io.github.trashemail.models.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
 @RestController
-@RequestMapping("/telegram/")
 public class TelegramResource {
 	
 	@Autowired
 	TelegramRequestHandler telegramRequestHandler;
 	@Autowired
 	SendTelegramMessage sendTelegramMessage;
+	@Autowired
+	UserRepository userRepository;
 
 	private static final Logger log = LoggerFactory.getLogger(
 			TelegramResource.class);
 
-    @PostMapping(value = "/new-message")
+    @PostMapping(value = "/telegram/new-message")
     public TelegramResponse messageHandler(
     		@RequestBody JsonNode telegramMessageRequest) {
     	
@@ -84,4 +84,13 @@ public class TelegramResource {
     	
     	return (TelegramResponse) response;
     }
+
+    @GetMapping(value = "/getChatId")
+	public Long getChatIdFortargetEmailAddress(@RequestParam String emailId){
+		User user = userRepository.findByEmailId(emailId);
+		if(user != null){
+			return user.getChatId();
+		}
+		else return null;
+	}
 }
