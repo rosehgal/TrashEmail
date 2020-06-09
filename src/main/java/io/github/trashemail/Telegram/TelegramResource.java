@@ -86,11 +86,8 @@ public class TelegramResource {
     }
 
     @GetMapping(value = "/getChatId")
-	public Long getChatIdFortargetEmailAddress(@RequestParam String emailId){
+	public User getChatIdFortargetEmailAddress(@RequestParam String emailId){
 		User user = userRepository.findByEmailId(emailId);
-		if(user != null){
-			return user.getChatId();
-		}
-		else return null;
+		return user;
 	}
 }
