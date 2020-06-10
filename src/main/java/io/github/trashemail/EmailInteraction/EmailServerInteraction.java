@@ -40,7 +40,7 @@ public class EmailServerInteraction {
 		MultiValueMap<String, String> data = new LinkedMultiValueMap<String, String>();
 		
 		data.add("address", user.getEmailId());
-		data.add("forwards_to", emailServerConfig.getImap().getEmail());
+		data.add("forwards_to", emailServerConfig.getTargetAlias());
 		
 		HttpEntity<MultiValueMap<String, String>> request =
 				new HttpEntity<MultiValueMap<String, String>>(data, headers);

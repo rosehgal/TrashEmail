@@ -135,7 +135,7 @@ public class TelegramRequestHandler {
 
 							User user = new User(chatId,
 									emailId,
-									emailServerConfig.getImap().getEmail());
+									emailServerConfig.getTargetAlias());
 
 							String response = null;
 							try {

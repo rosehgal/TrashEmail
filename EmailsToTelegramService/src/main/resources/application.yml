@@ -1,0 +1,30 @@
+trashemail:
+  host: localhost
+  port: 9090
+  path: /getChatId/
+
+imap-client-service:
+  telegram:
+    url: https://api.telegram.org/bot
+    bot-token: xxx
+    size: 4096
+  imap:
+    host: trashemail.in
+    port: 993
+    email: contact@trashemail.in
+    password: changeme
+  emails:
+    hostPath: http://192.168.225.39:8000/
+    downloadPath: /tmp/
+
+
+spring:
+  application:
+    name: EmailsToTelegramService
+
+
+logging:
+  level:
+    io:
+      github:
+        trashemail: debug

@@ -12,6 +12,9 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 @NoArgsConstructor
 public class TelegramConfig {
+    /*
+    TODO delete this class
+     */
     private String botToken;
     private String url;
     private int size;

@@ -18,16 +18,15 @@ public class EmailServerConfig {
     private String adminPassword;
     private String addUrl;
     private String removeUrl;
-    private Imap imap;
+    private String targetAlias;
 
-
-    @Configuration
-    @ConfigurationProperties(prefix = "imap")
-    @Getter @Setter @NoArgsConstructor
-    public static class Imap{
-        private String host;
-        private String port;
-        private String email;
-        private String password;
+    @Override public String toString() {
+        return "EmailServerConfig{" +
+                "hosts=" + hosts +
+                ", adminEmail='" + adminEmail + '\'' +
+                ", addUrl='" + addUrl + '\'' +
+                ", removeUrl='" + removeUrl + '\'' +
+                ", targetAlias='" + targetAlias + '\'' +
+                '}';
     }
 }

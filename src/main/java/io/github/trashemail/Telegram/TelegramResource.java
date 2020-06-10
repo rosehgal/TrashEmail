@@ -18,8 +18,7 @@ public class TelegramResource {
 	
 	@Autowired
 	TelegramRequestHandler telegramRequestHandler;
-	@Autowired
-	SendTelegramMessage sendTelegramMessage;
+
 	@Autowired
 	UserRepository userRepository;
 
