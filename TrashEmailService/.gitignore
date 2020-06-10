@@ -1,0 +1,45 @@
+HELP.md
+target/
+mvnw
+mvnw.cmd
+**/.mvn/wrapper/**
+### Ignore vim swp files
+*.swp
+### Ignore application-<enc>.yml properties
+**/application-dev.yml
+**/application-prod.yml
+**/application-qa.yml
+src/main/resources/application.yml
+*.db
+lib/
+bin/
+*.html
+./EmailsToTelegramService/src/main/resources/application-qa.yml
+*.yml
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+.DS_Store/*
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+
+### VS Code ###
+.vscode/
