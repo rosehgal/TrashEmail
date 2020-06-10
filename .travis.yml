@@ -11,4 +11,6 @@ cache:
   - $HOME/.m2
 
 # Build Maven project
-script: mvn clean install
+script:
+    - cd EmailsToTelegramService && mvn clean install && cd ..
+    - cd TrashEmailService && mvn clean install
