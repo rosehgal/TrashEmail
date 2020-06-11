@@ -6,9 +6,21 @@
 ```
 
 ### tl;dr
-Forget about spam, advertising mailings, hacking and attacking robots. Keep your real mailbox clean and secure.Trashemail provides temporary(or permanent), secure, anonymous, free, disposable email address. Want to get one ? its here : [@trashemail_bot](https://t.me/trashemail_bot)
+TrashEmail is hosted Telegram bot that can save your private email address by offering disposable email address. It can create, manage, disposable email address and link them with your telegram bot chat. 
+- **Where is the bot?** - [@trashemail_bot](https://t.me/trashemail_bot)
+- **How can I create dispoable mail id?** - Decide a username & ask the bot :smile:
+- **How many emails can I create?** - Right now, the count is **4**.
+- **How can I access my emails?** - If there is an email for you, it will come to telegram :smile: Easy right.
+- **Do I need to setup and remember any password?** - No Sir, that's the trick.
+- **Why am I maintaining and hosting this?** - This is my first such tool for community :smile: I wanted to give something back to community. If you like the idea and wanted to contribute then [BuyMeACoffee](https://www.buymeacoffee.com/r0hi7)
+
+#### How can I use this hosted service:
+- Its super easy, just see the demo below.
+<img src="./HowToUseTrashEmail.gif" width="100%" />
 
 ### What is Disposable Temporary E-mail? And How am I different?
+Forget about spam, advertising mailings, hacking and attacking robots. Keep your real mailbox clean and secure.Trashemail provides temporary(or permanent), secure, anonymous, free, disposable email address. Want to get one ? its here : [@trashemail_bot](https://t.me/trashemail_bot)
+
 **Disposable email** - is a service that allows to receive email at a temporary(Here in case, the temporary factor is upto you) address that self-destructed after a certain time elapses. It is also known by names like : tempmail, 10minutemail, throwaway email, fake-mail or trash-mail. Many forums, Wi-Fi owners, websites and blogs ask visitors to register before they can view content, post comments or download something. 
 
 **Trashemail** is not most advanced throwaway email service but a reliable service that helps you avoid spam, stay safe and get emails delivered directly to your [@trashemail_bot](https://t.me/trashemail_bot) *Telegram bot*. And in case you are getting too many such mails, just delete the email Id :) with one click(oops command, since this is telegram bot).
@@ -34,6 +46,8 @@ TrashEmail is Java spring-boot microservice that anyone can build locally curren
  Few requirements with the mailserver:
  1. SMTP host should allow **Alias** creation.
  2. IMAP server should support **IDLE**.
+
+I have to update the config slightly, and will do it quickly. :)
 
 All you need to do is clone the source, build and run, and just tell telegram that you are listening here.
 ```shell script
@@ -133,8 +147,16 @@ logging:
 
 I have tried to engineer this service to be reliable, in case if you find any issues with the reliability(or with anything else), please feel free to drop in a PR. I would be happy to review and merge.
 
+### Sponsors
+1. Two domains [thromail.com](thromail.com) & [humblemail.com](humblemail.com) are proudly donated by [zlipa.com](https://zlipa.com/)
+2. If you like the idea, then buy me a coffee, I will get caffine in my blood and to spend extra nights to make this product secure, up and running :smile:
+
+<a href="https://www.buymeacoffee.com/r0hi7" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/arial-blue.png" alt="Buy Me A Coffee" style="height: 25.5px !important;width: 72px !important;" ></a>
+
+3. Or you can drop in a :star:, this motivates me.
 
 ### Credits
 ![TelegramAllTheThings](./telegram-group-all-the-things.jpg)
+
 Can't find one for the BOT. L0L
 
