@@ -16,7 +16,8 @@ TrashEmail is hosted Telegram bot that can save your private email address by of
 
 #### How can I use this hosted service:
 - Its super easy, just see the demo below.
-<img src="./HowToUseTrashEmail.gif" width="100%" />
+
+[![Video on How to use it](https://img.youtube.com/vi/DB1orBm9VCY/0.jpg)](https://www.youtube.com/watch?v=DB1orBm9VCY)
 
 ### What is Disposable Temporary E-mail? And How am I different?
 Forget about spam, advertising mailings, hacking and attacking robots. Keep your real mailbox clean and secure.Trashemail provides temporary(or permanent), secure, anonymous, free, disposable email address. Want to get one ? its here : [@trashemail_bot](https://t.me/trashemail_bot)
