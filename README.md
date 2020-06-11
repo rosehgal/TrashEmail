@@ -157,7 +157,6 @@ I have tried to engineer this service to be reliable, in case if you find any is
 3. Or you can drop in a :star:, this motivates me.
 
 ### Credits
-![TelegramAllTheThings](./telegram-group-all-the-things.jpg)
+![TelegramAllTheThings](./telegram-bot-all-the-things.jpg)
 
-Can't find one for the BOT. L0L
 
