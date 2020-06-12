@@ -21,7 +21,7 @@ services:
     depends_on:
       - trash-email-service
     volumes:
-      - "/tmp:/tmp:rw"
+      - "/tmp:/opt/EmailsToTelegramService/mails/:rw"
     environment:
       - SPRING_PROFILES_ACTIVE
 
