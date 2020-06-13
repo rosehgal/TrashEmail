@@ -16,14 +16,7 @@
 # endif
 
 MVN = mvn
-
-# Define the commandline invocation of Docker if necessary
-# Since the build is done with compose:
-# ifeq ($(DOCKER_COMPOSE))
-#     DOCKER_COMPOSE := docker-compose
-# endif
-
-
+DOCKER_COMPOSE=docker-compose
 
 ######################## BUILD TARGETS ###########################
 
@@ -37,7 +30,7 @@ build :
 	echo "Building EmailsToTelegramService ...\n"
 	cd ./EmailsToTelegramService && $(MVN) -Dmaven.test.skip=true install
 	echo "Building the docker-compose ...\n"
-	@ $(DOCKER_COMPOSE) build
+	$(DOCKER_COMPOSE) build
 
 copy :
 	echo $(ENV)

@@ -12,6 +12,8 @@ services:
     restart: on-failure
     environment:
       - SPRING_PROFILES_ACTIVE
+    depends_on:
+      - mysql
 
   emails-to-telegram-service:
     build: ./EmailsToTelegramService
@@ -25,6 +27,16 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE
 
+  mysql:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'trashemail'
+      MYSQL_ROOT_PASSWORD: changeme 
+    volumes:
+      - "../trashemail-mysql-data-dir:/var/lib/mysql:rw"
+    networks:
+      - trash-email-network
 
 
 networks:
