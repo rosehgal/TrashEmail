@@ -12,5 +12,5 @@ cache:
 
 # Build Maven project
 script:
-    - cd EmailsToTelegramService && mvn clean install && cd ..
-    - cd TrashEmailService && mvn clean install
+    - cd EmailsToTelegramService && mvn clean install -DskipTests=true && cd ..
+    - cd TrashEmailService && mvn clean install -DskipTests=true
