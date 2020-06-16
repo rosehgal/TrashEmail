@@ -13,10 +13,12 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "trashemail")
 public class TrashemailConfig {
     private Integer maxEmailsPerUser;
+    private String version;
 
     @Override public String toString() {
         return "TrashemailConfig{" +
                 "maxEmailsPerUser=" + maxEmailsPerUser +
+                ", version='" + version + '\'' +
                 '}';
     }
 }

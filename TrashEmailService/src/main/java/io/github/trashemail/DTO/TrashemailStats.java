@@ -16,4 +16,5 @@ public class TrashemailStats {
     private Map<String, Long> domainsToNumbers;
     private Long emailIdsCreatedToday;
     private List<Long> emailIdsCreatedInWeek;
+    private String version;
 }

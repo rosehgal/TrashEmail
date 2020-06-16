@@ -1,9 +1,11 @@
 package io.github.trashemail;
 
 import io.github.trashemail.Configurations.EmailServerConfig;
+import io.github.trashemail.Configurations.TrashemailConfig;
 import io.github.trashemail.DTO.TrashemailStats;
 import io.github.trashemail.Respositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.info.BuildProperties;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,6 +21,9 @@ public class TrashemailResource {
 
     @Autowired
     EmailServerConfig emailServerConfig;
+
+    @Autowired
+    TrashemailConfig trashemailConfig;
 
     @GetMapping(value = "/stats")
     public TrashemailStats getStats(){
@@ -60,6 +65,9 @@ public class TrashemailResource {
                 )
         );
         trashemailStats.setDomainsToNumbers(domainCount);
+        trashemailStats.setVersion(
+                trashemailConfig.getVersion()
+        );
         
         return trashemailStats;
     }
