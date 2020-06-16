@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -13,6 +14,6 @@ public class TrashemailStats {
     private Long numberOfUsers;
     private Long numberOfEmailsRegistered;
     private Map<String, Long> domainsToNumbers;
-    private Boolean applicationStatus;
-    private Boolean dbConnection;
+    private Long emailIdsCreatedToday;
+    private List<Long> emailIdsCreatedInWeek;
 }

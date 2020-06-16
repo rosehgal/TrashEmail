@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -28,6 +29,9 @@ public class User {
 	private String emailId;
 
 	private String forwardsTo;
+
+	@CreationTimestamp
+	private LocalDateTime createDateTime;
 
 	public User(long chatId, String emailId, String forwardsTo) {
 		this.chatId = chatId;
