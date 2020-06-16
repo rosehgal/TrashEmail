@@ -1,0 +1,27 @@
+trashemail:
+  host: trash-email-service
+  port: 9090
+  path: /getChatId/
+
+imap-client-service:
+  telegram:
+    url: https://api.telegram.org/bot
+    bot-token: xxxxxxxxxxxxxxxxxxxxxx
+    size: 4096
+  imap:
+    host: trashemail.in
+    port: 993
+    email: demo@trashemail.in
+    password: changeme
+  emails:
+    hostPath: http://127.0.0.1:8000/
+    downloadPath: /opt/EmailsToTelegramService/mails/
+
+# main will specify springboot application to
+# no start any tomcat server, which is not even
+# required for emailservice.
+spring:
+  application:
+    name: EmailsToTelegramService
+  main:
+    web-application-type: none

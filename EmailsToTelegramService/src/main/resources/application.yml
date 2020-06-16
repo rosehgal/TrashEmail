@@ -21,6 +21,8 @@ imap-client-service:
 spring:
   application:
     name: EmailsToTelegramService
+  main:
+    web-application-type: none
 
 
 logging:
