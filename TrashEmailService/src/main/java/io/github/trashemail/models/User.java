@@ -4,12 +4,14 @@ package io.github.trashemail.models;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Date;
 
 @Entity
 @Table(name="UserEmailToChatIdMapping")
@@ -26,7 +28,7 @@ public class User {
 	private String emailId;
 
 	private String forwardsTo;
-	
+
 	public User(long chatId, String emailId, String forwardsTo) {
 		this.chatId = chatId;
 		this.emailId = emailId;
