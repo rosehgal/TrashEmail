@@ -5,16 +5,16 @@ import io.github.trashemail.Configurations.TrashemailConfig;
 import io.github.trashemail.DTO.TrashemailStats;
 import io.github.trashemail.Respositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.info.BuildProperties;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-@RestController
+@Controller
 public class TrashemailResource {
     @Autowired
     UserRepository userRepository;
@@ -25,8 +25,11 @@ public class TrashemailResource {
     @Autowired
     TrashemailConfig trashemailConfig;
 
-    @GetMapping(value = "/stats")
-    public TrashemailStats getStats(){
+    @GetMapping(value = "/dashboard")
+    public ModelAndView presentDashBoard(){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("dashboard");
+
         TrashemailStats trashemailStats = new TrashemailStats();
 
         trashemailStats.setNumberOfUsers(
@@ -68,7 +71,9 @@ public class TrashemailResource {
         trashemailStats.setVersion(
                 trashemailConfig.getVersion()
         );
-        
-        return trashemailStats;
+
+        modelAndView.addObject(trashemailStats);
+
+        return modelAndView;
     }
 }
