@@ -5,48 +5,81 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import org.apache.commons.mail.util.MimeMessageParser;
+import org.jsoup.Jsoup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import javax.mail.Address;
 import javax.mail.Message;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.util.Date;
+import java.util.ArrayList;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@Component
 public class MailParser {
-    private String to;
-    private String from;
-    private String subject;
-    private String content;
-    private Date date;
-    private String htmlContent;
-    private Boolean htmlContentSet;
-
     private static final Logger log = LoggerFactory.getLogger(
             MailParser.class);
 
-    public MailParser(Message message) throws Exception {
-        this.content="";
-        this.from="";
-        this.to="";
-        this.subject="";
+    public ParsedMail parseMail(Message message) throws Exception {
+        ParsedMail parsedMail = new ParsedMail();
 
-        this.htmlContentSet = false;
-        this.htmlContent = null;
+        parsedMail.content="";
+        parsedMail.from="";
+        parsedMail.to="";
+        parsedMail.recipients = new ArrayList<>();
+        parsedMail.subject="";
+
+        parsedMail.htmlContentSet = false;
+        parsedMail.htmlContent = null;
 
         for(Address a : message.getFrom())
-            this.from += a.toString() + ", ";
-        for(Address a : message.getAllRecipients())
-            this.to += a.toString() + ", ";
+            parsedMail.from += a.toString() + ", ";
 
-        this.subject = message.getSubject();
+        parsedMail.subject = message.getSubject();
         MimeMessageParser messageParser = new MimeMessageParser(
                 (MimeMessage) message
         );
+        /*
+        Parse the message object.
+         */
         messageParser.parse();
+
+        /*
+        Get the list of To and put it in recipients
+         */
+        for(Address a : messageParser.getTo()){
+            parsedMail.getRecipients().add(
+                    ((InternetAddress)a).getAddress()
+            );
+            parsedMail.to += a.toString() + ", ";
+        }
+        /*
+        Get the list of CC mail addresses and put in recipients
+        */
+        for(Address a : messageParser.getCc()){
+            parsedMail.getRecipients().add(
+                    ((InternetAddress)a).getAddress()
+            );
+            parsedMail.to += a.toString() + ", ";
+        }
+
+        /*
+        Get the list of BCC mail addresses and put in recipients
+        */
+        for(Address a : messageParser.getBcc()){
+
+            log.debug("BCC mail for "+a.toString());
+
+            parsedMail.getRecipients().add(
+                    ((InternetAddress)a).getAddress()
+            );
+            parsedMail.to += a.toString() + ", ";
+        }
+
 
         /*
         Multi-part mime refers to sending both an HTML and TEXT part of
@@ -64,54 +97,35 @@ public class MailParser {
             This is the best bet.
             We have both plain content and html content.
             */
-            this.htmlContent = messageParser.getHtmlContent();
-            this.htmlContentSet = true;
+            parsedMail.htmlContent = messageParser.getHtmlContent();
+            parsedMail.htmlContentSet = true;
             if(messageParser.getPlainContent().isEmpty()){
                 /*
                 Plain text segment is present but content is blank.
                  */
-                this.content = org.jsoup.Jsoup.parse(
+                parsedMail.content = Jsoup.parse(
                         messageParser.getHtmlContent()).text();
             }
             else
-                this.content = messageParser.getPlainContent();
+                parsedMail.content = messageParser.getPlainContent();
         }
         else if (messageParser.hasHtmlContent()) {
-            this.content = org.jsoup.Jsoup.parse(
+            parsedMail.content = Jsoup.parse(
                     messageParser.getHtmlContent()).text();
-            this.htmlContentSet = true;
-            this.htmlContent = messageParser.getHtmlContent();
+            parsedMail.htmlContentSet = true;
+            parsedMail.htmlContent = messageParser.getHtmlContent();
         }
         else{
             /*
             Incoming mail is just plain text content.
              */
-            this.htmlContentSet = false;
-            this.content = messageParser.getPlainContent();
+            parsedMail.htmlContentSet = false;
+            parsedMail.content = messageParser.getPlainContent();
         }
 
-        this.date = message.getSentDate();
-
+        parsedMail.date = message.getSentDate();
+        return parsedMail;
     }
 
-    @Override
-    public String toString() {
-        String mailData = String.format(
-            "===========================\n" +
-            "To : %s\n" +
-            "From : %s\n" +
-            "Date : %s\n" +
-            "===========================\n" +
-            "Subject : %s\n" +
-            "===========================\n\n" +
-            "%s",
-            this.to,
-            this.from,
-            this.date,
-            this.subject,
-            this.content
-        );
-        return mailData;
-    }
 }
 
