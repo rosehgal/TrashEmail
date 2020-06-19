@@ -2,6 +2,7 @@ package io.github.trashemail.EmailsToTelegramService;
 
 import io.github.trashemail.EmailsToTelegramService.Configuration.TrashemailConfig;
 import io.github.trashemail.EmailsToTelegramService.utils.MailParser;
+import io.github.trashemail.EmailsToTelegramService.utils.ParsedMail;
 import io.github.trashemail.EmailsToTelegramService.utils.SaveMailToHTMLFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,8 @@ public class ForwardMailsToTelegram {
     private SendTelegramMessage sendTelegramMessage;
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private MailParser mailParser;
 
     private static final Logger log = LoggerFactory.getLogger(
             ForwardMailsToTelegram.class);
@@ -63,46 +66,40 @@ public class ForwardMailsToTelegram {
     }
 
     public void sendToTelegram(Message message) throws Exception {
-        String emailFor = message.getAllRecipients()[0].toString();
+        ParsedMail parsedMail = mailParser.parseMail(message);
 
-        /*
-        Fetch chat if from TrashEmail service
-        */
-
-        Long chatId = null;
-        try{
-            chatId = getChatIdFromEmailId(emailFor);
-        } catch(Exception e){
-            log.error("Unable to find chatId for EmailId: " + emailFor);
-            e.printStackTrace();
-            return;
-        }
-
-        MailParser parsedMail = new MailParser(message);
-
-        /*
-        If html content is set, offer to save in file and show html link.
-        */
-        if(parsedMail.getHtmlContentSet()){
-            Object filename = saveMailToHTMLFile.saveToFile(
-                    parsedMail.getHtmlContent()
-            );
-
-            if (filename != null)
-                sendTelegramMessage.sendMessage(
-                        parsedMail.toString(),
-                        chatId,
-                        (String) filename
-                );
-            else {
-                sendTelegramMessage.sendMessage(parsedMail.toString(),
-                                                chatId
-                );
+        for (String emailFor : parsedMail.getRecipients()) {
+            /*
+            Fetch chat if from TrashEmail service
+            */
+            Long chatId = null;
+            try {
+                chatId = getChatIdFromEmailId(emailFor);
+            } catch (Exception e) {
+                log.error("Unable to find chatId for EmailId: " + emailFor);
+                e.printStackTrace();
+                return;
             }
-        }
-        else {
-            sendTelegramMessage.sendMessage(parsedMail.toString(),
-                                            chatId);
+
+            /*
+            If html content is set, offer to save in file and show html link.
+            */
+            if (parsedMail.getHtmlContentSet()) {
+                Object filename = saveMailToHTMLFile.saveToFile(
+                        parsedMail.getHtmlContent());
+
+                if (filename != null)
+                  sendTelegramMessage.sendMessage(parsedMail.toString(),
+                                                  chatId,
+                                                  (String) filename);
+                else {
+                  sendTelegramMessage.sendMessage(parsedMail.toString(),
+                                                  chatId);
+                }
+            } else {
+                sendTelegramMessage.sendMessage(parsedMail.toString(),
+                                                chatId);
+            }
         }
     }
 }
