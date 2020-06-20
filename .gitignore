@@ -15,6 +15,7 @@ lib/
 bin/
 *.html
 ./EmailsToTelegramService/src/main/resources/application-qa.yml
+./EmailsToTelegramService/src/main/resources/application-dev.yml
 *.yml
 
 ### STS ###

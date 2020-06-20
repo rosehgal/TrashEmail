@@ -4,6 +4,8 @@ package io.github.trashemail.EmailsToTelegramService;
 import io.github.trashemail.EmailsToTelegramService.Configuration.ImapClientServiceConfig;
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.imap.IMAPStore;
+import com.sun.mail.imap.protocol.IMAPProtocol;
+import com.sun.mail.iap.ProtocolException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,13 +33,13 @@ public class ImapClient {
 
     private static final Logger log = LoggerFactory.getLogger(ImapClient.class);
 
-    private static String username ;
-    private static String password ;
-    private static String imapHost ;
-    private static String imapPort ;
+    private static String username;
+    private static String password;
+    private static String imapHost;
+    private static String imapPort;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         username = imapClientServiceConfig.getImap().getEmail();
         password = imapClientServiceConfig.getImap().getPassword();
         imapHost = imapClientServiceConfig.getImap().getHost();
@@ -82,11 +84,27 @@ public class ImapClient {
                 }
             });
 
-            IdleThread idleThread = new IdleThread(inbox);
-            idleThread.setDaemon(false);
-            idleThread.start();
+            Thread idleThread = new Thread(new KeepAliveRunnable((IMAPFolder) inbox));
 
-            idleThread.join();
+            idleThread.start();
+            while (!Thread.interrupted()) {
+                try {
+                    ensureOpen(inbox);
+                    log.info("IMAP client: IDLE Listening state ...");
+                    ((IMAPFolder) inbox).idle();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e1) {
+                    }
+                }
+            }
+
+            if (idleThread.isAlive()) {
+                idleThread.interrupt();
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -95,37 +113,35 @@ public class ImapClient {
         }
     }
 
-    private static class IdleThread extends Thread {
-        private final Folder folder;
-        private volatile boolean running = true;
+    private static class KeepAliveRunnable implements Runnable {
 
-        public IdleThread(Folder folder) {
-            super();
+        private static final long KEEP_ALIVE_FREQ = 120000; // 2 minutes
+
+        private IMAPFolder folder;
+
+        public KeepAliveRunnable(IMAPFolder folder) {
             this.folder = folder;
-        }
-
-        public synchronized void kill() {
-
-            if (!running)
-                return;
-            this.running = false;
         }
 
         @Override
         public void run() {
-            while (running) {
+            while (!Thread.interrupted()) {
                 try {
-                    ensureOpen(folder);
-                    log.info("IMAP client: IDLE Listening state ...");
-                    ((IMAPFolder) folder).idle();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e1) {
-                    }
-                }
+                    Thread.sleep(KEEP_ALIVE_FREQ);
 
+                    // Perform a NOOP just to keep alive the connection
+                    log.debug("Performing a NOOP to keep alive the connection");
+                    folder.doCommand(new IMAPFolder.ProtocolCommand() {
+                        public Object doCommand(IMAPProtocol protocol)
+                                throws ProtocolException {
+                            protocol.simpleCommand("NOOP", null);
+                            return null;
+                        }
+                    });
+                } catch (InterruptedException e) {
+                } catch (MessagingException e) {
+                    log.warn("Unexpected exception while keeping alive the IDLE connection", e);
+                }
             }
         }
     }
@@ -151,7 +167,7 @@ public class ImapClient {
     }
 
     public static void ensureOpen(final Folder folder)
-    throws MessagingException {
+            throws MessagingException {
 
         if (folder != null) {
             Store store = folder.getStore();
@@ -168,7 +184,7 @@ public class ImapClient {
             folder.open(Folder.READ_ONLY);
             if (!folder.isOpen())
                 throw new MessagingException("Unable to open folder " +
-                                                     folder.getFullName());
+                        folder.getFullName());
         }
 
     }
