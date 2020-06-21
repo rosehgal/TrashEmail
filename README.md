@@ -13,6 +13,9 @@ TrashEmail is hosted Telegram bot that can save your private email address by of
 - **How can I access my emails?** - If there is an email for you, it will come to telegram :smile: Easy right.
 - **Do I need to setup and remember any password?** - No Sir, that's the trick.
 - **Why am I maintaining and hosting this?** - This is my first such tool for community :smile: I wanted to give something back to community. If you like the idea and wanted to contribute then [BuyMeACoffee](https://www.buymeacoffee.com/r0hi7)
+- **How many users are currently using it?** - The information about active registered users and latest version of this service can be found here: https://telegram.trashemail.in/TrashemailSite/
+
+![Trashemail Dashboard](./trashemail-dashboard.png "Trashemail Dashboard")
 
 #### How can I use this hosted service:
 - Its super easy, just see the demo below.
@@ -55,64 +58,98 @@ All you need to do is clone the source, build and run, and just tell telegram th
 git clone https://github.com/r0hi7/Trashemail.git
 cd Trashemail
 
-# Update the application.yml file
-# according to your mail server
+# Copy EmailsToTelegramServiceConfig-sample.yml and
+# TrashEmailServiceConfig-sample.yml files
+# according to your environemnt
+# Let's say you want to deploy it for dev env
+# Then copy these files like
 
-mvn clean install
-# If successfull
-java -jar target/trashemail target/teledot-0.0.1-SNAPSHOT.jar
+cp EmailsToTelegramServiceConfig-sample.yml EmailsToTelegramServiceConfig-dev.yml
+cp TrashEmailServiceConfig-sample.yml TrashEmailServiceConfig-dev.yml
+
+# Now modify the respective copied files with your configs
+# Similarly, it can be deployed be "qa", "prod" environments
+# Finally, run the script build-and-run.sh with env as an argument
+
+bash build-and-run.sh dev
+
+# If you dont want to deploy it in docker-compose, then
+# Use Makefile directly
+# It will create targets for EmailsToTelegramService and TrashEmailService respectively
+
+make dev
 ```
-Dev config may look like this:
+Dev configs may look like this:
+`EmailsToTelegramServiceConfig-dev.yml`
 ```yaml
 # Email Server IMAP and SMTP configuration
 # SMTP server should support Alias creation and deletion
 # IMAP server should support IDLE
 
+trashemail:
+  host: trash-email-service
+  port: 9090
+  path: /getChatId/
+
+imap-client-service:
+  telegram:
+    url: https://api.telegram.org/bot
+    bot-token: xxxxxxxxxxxxxxxxxxxxxx
+    size: 4096
+  imap:
+    host: trashemail.in
+    port: 993
+    email: demo@trashemail.in
+    password: changeme
+  emails:
+    hostPath: http://127.0.0.1:8000/
+    downloadPath: /opt/EmailsToTelegramService/mails/
+
+# main will specify springboot application to
+# no start any tomcat server, which is not even
+# required for emailservice.
+spring:
+  application:
+    name: EmailsToTelegramService
+  main:
+    web-application-type: none
+```
+
+`TrashEmailServiceConfig-dev.yml`
+```yaml
+# Tomcat server settings
+server:
+  port: 9090
+
+#Email server configuration for SMTP alias creation
 email-server:
   hosts:
     - trashemail.in
     - thromail.com
     - humblemail.com
   admin-email: contact@trashemail.in
-  admin-password: changeme
+  admin-password: sample
   add-url: https://trashemail.in/admin/mail/aliases/add
   remove-url: https://trashemail.in/admin/mail/aliases/remove
-  imap:
-    host: trashemail.in
-    port: 993
-    email: contact@trashemail.in
-    password: changeme
+  target-alias: demo@trashemail.in
 
-# Telegram bot specific settings
-telegram:
-  url: https://api.telegram.org/bot
-  botToken: xxxxxxxxxxxxxxxxxxxxxx
-  size: 4096
 
-# For development purpose, H2 is used.
-# I prefer H2 persistent in file.
+# Sample config for connecting with mysql-docker
 spring:
   datasource:
-    url: jdbc:h2:file:./AppDB;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: password
+    url: jdbc:mysql://mysql:3306/trashemail
+    username: root
+    password: changeme
+    driver-class-name: com.mysql.jdbc.Driver
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
       ddl-auto: update
-  h2:
-    console:
-      path: /h2-console
-      settings:
-        web-allow-others: true
-      enabled: true
+    show-sql: true
   application:
     name: Trashemail
 
-# Tomcat server settings
-server:
-  port: 9090
+
 
 # Trashemail app server settings
 trashemail:
@@ -126,11 +163,14 @@ logging:
         trashemail: debug
 ```
 
+
 1. This code will spin up the service at `localhost:9090/telegram/new-message` endpoint.
 2. Now will have to expose this service to internet, and there are options like : `ngrok`, `dataplicity`, `localtunnel` etc.
-3. DB is taken care by `h2`, in a file, (I think that is sufficient, It need very light DB table).
+	* Start `ngrok`with http on port 9090
+	* Get the `ngrok` https url
+3. DB is taken care by `mysql`
 4. Get a bot for you from, [Telegram Bot Father](https://telegram.me/BotFather)
-5. The last step is important, tell telegram that where you are listening :)
+5. The last step is important, tell telegram that where you are listening :).  Set up the `webhook`, this `webhook` will tell telegram where to send the bot incoming requests
     ```shell script
     curl -F "url=https://<YOUR_DOMAIN>/telegram/new-message" https://api.telegram.org/bot<BOT_TOKEN>/setWebhook
     ```
@@ -158,5 +198,4 @@ I have tried to engineer this service to be reliable, in case if you find any is
 
 ### Credits
 ![TelegramAllTheThings](./telegram-bot-all-the-things.jpg)
-
 
