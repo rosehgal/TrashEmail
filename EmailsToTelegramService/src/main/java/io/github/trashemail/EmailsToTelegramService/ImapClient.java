@@ -115,7 +115,7 @@ public class ImapClient {
 
     private static class KeepAliveRunnable implements Runnable {
 
-        private static final long KEEP_ALIVE_FREQ = 120000; // 2 minutes
+        private static final long KEEP_ALIVE_FREQ = 240000; // 4 minutes
 
         private IMAPFolder folder;
 

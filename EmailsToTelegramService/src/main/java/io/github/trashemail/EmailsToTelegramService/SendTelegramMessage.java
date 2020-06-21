@@ -14,6 +14,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import org.apache.commons.text.StringEscapeUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,11 +61,15 @@ public class SendTelegramMessage {
                 imapClientServiceConfig.getTelegram().getBotToken() +
                 "/sendMessage";
 
-        ArrayList<String> messageChunks = chunks(message);
+        String escapedMessage = StringEscapeUtils.escapeHtml4(message);
+        ArrayList<String> messageChunks = chunks(escapedMessage);
+
         for (int i = 0; i < messageChunks.size(); i++) {
             TelegramMessage request = new TelegramMessage(
                     chatId,
-                    messageChunks.get(i));
+                    messageChunks.get(i),
+                    "HTML");
+
 
             ResponseEntity response = restTemplate.postForEntity(
                     telegramURI,
