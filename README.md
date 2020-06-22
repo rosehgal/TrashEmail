@@ -1,26 +1,34 @@
-# TrashEmail 
-[![Build Status](https://travis-ci.org/r0hi7/Trashemail.svg?branch=master)](https://travis-ci.org/r0hi7/Trashemail)
+<p align=center>
+	<img src="./TrashEmail.png">
+</p>
 
-```diff
-+ Bot is healthy UP and running :)
-```
+![Travis (.org)](https://img.shields.io/travis/r0hi7/TrashEmail)
+![Bot](https://img.shields.io/static/v1?label=BOT&message=Healthy%20|%20UP&color=green&style=flat)
+[![Gitter](https://badges.gitter.im/Trashemail/community.svg)](https://gitter.im/Trashemail/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+![GitHub language count](https://img.shields.io/github/languages/count/r0hi7/TrashEmail)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/r0hi7/TrashEmail)
+![GitHub issues](https://img.shields.io/github/issues/r0hi7/TrashEmail)
+![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/r0hi7/TrashEmail)
+
 
 ### tl;dr
 TrashEmail is hosted Telegram bot that can save your private email address by offering disposable email address. It can create, manage, disposable email address and link them with your telegram bot chat. 
 - **Where is the bot?** - [@trashemail_bot](https://t.me/trashemail_bot)
 - **How can I create dispoable mail id?** - Decide a username & ask the bot :smile:
-- **How many emails can I create?** - Right now, the count is **4**.
+- **How many email ids can I own at a time?** - Right now, the count is **8**.
 - **How can I access my emails?** - If there is an email for you, it will come to telegram :smile: Easy right.
 - **Do I need to setup and remember any password?** - No Sir, that's the trick.
-- **Why am I maintaining and hosting this?** - This is my first such tool for community :smile: I wanted to give something back to community. If you like the idea and wanted to contribute then [BuyMeACoffee](https://www.buymeacoffee.com/r0hi7)
+- **Why am I maintaining and hosting this?** - This is my first such tool for community :smile: I wanted to give something back to community. If you like the idea and wanted to contribute then you can [BuyMeACoffee](https://www.buymeacoffee.com/r0hi7)
 - **How many users are currently using it?** - The information about active registered users and latest version of this service can be found here: https://telegram.trashemail.in/TrashemailSite/
 
 ![Trashemail Dashboard](./trashemail-dashboard.png "Trashemail Dashboard")
+
 
 #### How can I use this hosted service:
 - Its super easy, just see the demo below.
 
 [![Video on How to use it](https://img.youtube.com/vi/DB1orBm9VCY/0.jpg)](https://www.youtube.com/watch?v=DB1orBm9VCY)
+
 
 ### What is Disposable Temporary E-mail? And How am I different?
 Forget about spam, advertising mailings, hacking and attacking robots. Keep your real mailbox clean and secure.Trashemail provides temporary(or permanent), secure, anonymous, free, disposable email address. Want to get one ? its here : [@trashemail_bot](https://t.me/trashemail_bot)
@@ -189,7 +197,8 @@ logging:
 I have tried to engineer this service to be reliable, in case if you find any issues with the reliability(or with anything else), please feel free to drop in a PR. I would be happy to review and merge.
 
 ### Sponsors
-1. Two domains [thromail.com](thromail.com) & [humblemail.com](humblemail.com) are proudly donated by [zlipa.com](https://zlipa.com/)
+1. Two domains [thromail.com](thromail.com) & [humblemail.com](humblemail.com) are proudly donated by [zlipa.com](https://zlipa.com/). [Zlipa](https://zlipa.com/) offers domains names for startups, bootstrapper etc with 10X lesser market price. Exciting right? Just checkout once. 
+
 2. If you like the idea, then buy me a coffee, I will get caffine in my blood and to spend extra nights to make this product secure, up and running :smile:
 
 <a href="https://www.buymeacoffee.com/r0hi7" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/arial-blue.png" alt="Buy Me A Coffee" style="height: 25.5px !important;width: 72px !important;" ></a>
