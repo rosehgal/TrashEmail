@@ -2,13 +2,12 @@
 	<img src="./TrashEmail.png">
 </p>
 
-![Travis (.org)](https://img.shields.io/travis/r0hi7/TrashEmail)
-![Bot](https://img.shields.io/static/v1?label=BOT&message=Healthy%20|%20UP&color=green&style=flat)
+[![Build Status](https://travis-ci.org/TrashEmail/TrashEmail.svg?branch=master)](https://travis-ci.org/TrashEmail/TrashEmail)![Bot](https://img.shields.io/static/v1?label=BOT&message=Healthy%20|%20UP&color=green&style=flat)
 [![Gitter](https://badges.gitter.im/Trashemail/community.svg)](https://gitter.im/Trashemail/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-![GitHub language count](https://img.shields.io/github/languages/count/r0hi7/TrashEmail)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/r0hi7/TrashEmail)
-![GitHub issues](https://img.shields.io/github/issues/r0hi7/TrashEmail)
-![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/r0hi7/TrashEmail)
+![GitHub language count](https://img.shields.io/github/languages/count/TrashEmail/TrashEmail)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/TrashEmail/TrashEmail)
+![GitHub issues](https://img.shields.io/github/issues/TrashEmail/TrashEmail)
+![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/TrashEmail/TrashEmail)
 
 
 ### tl;dr
