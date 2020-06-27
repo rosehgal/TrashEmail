@@ -19,6 +19,8 @@ public class ParsedMail {
     public Date date;
     public String htmlContent;
     public Boolean htmlContentSet;
+    public Boolean attachmentSet;
+    public List<String> attachmentList;
 
     @Override
     public String toString() {
