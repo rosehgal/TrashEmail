@@ -3,8 +3,10 @@ package io.github.trashemail;
 import io.github.trashemail.Configurations.EmailServerConfig;
 import io.github.trashemail.Configurations.TrashemailConfig;
 import io.github.trashemail.DTO.TrashemailStats;
+import io.github.trashemail.Respositories.EmailCounterRepository;
 import io.github.trashemail.Respositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
@@ -18,6 +20,9 @@ import java.util.Map;
 public class TrashemailResource {
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    EmailCounterRepository emailCounterRepository;
 
     @Autowired
     EmailServerConfig emailServerConfig;
@@ -67,6 +72,15 @@ public class TrashemailResource {
         trashemailStats.setDomainsToNumbers(domainCount);
         trashemailStats.setVersion(
                 trashemailConfig.getVersion()
+        );
+        trashemailStats.setNumberOfEmailsProcessed(
+            emailCounterRepository.count()
+        );
+        trashemailStats.setTotalNumberOfUsers(
+                userRepository.getNumberOfUsers()
+        );
+        trashemailStats.setCummulativeEmailsCountPerDay(
+                userRepository.getCommulativeEmailCounts(PageRequest.of(0, 2))
         );
         return trashemailStats;
     }

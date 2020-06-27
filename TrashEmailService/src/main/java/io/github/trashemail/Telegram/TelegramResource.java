@@ -2,6 +2,7 @@ package io.github.trashemail.Telegram;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.trashemail.Respositories.EmailCounterRepository;
 import io.github.trashemail.Respositories.UserRepository;
 import io.github.trashemail.Telegram.DTO.TelegramResponse;
 import io.github.trashemail.Telegram.DTO.messageEntities.CallbackQuery;
@@ -21,6 +22,9 @@ public class TelegramResource {
 
 	@Autowired
 	UserRepository userRepository;
+
+	@Autowired
+	EmailCounterRepository emailCounterRepository;
 
 	private static final Logger log = LoggerFactory.getLogger(
 			TelegramResource.class);
@@ -86,7 +90,10 @@ public class TelegramResource {
 
     @GetMapping(value = "/getChatId")
 	public User getChatIdFortargetEmailAddress(@RequestParam String emailId){
-		User user = userRepository.findByEmailId(emailId);
+
+    	User user = userRepository.findByEmailId(emailId);
+		emailCounterRepository.updateCount();
+
 		return user;
 	}
 }
