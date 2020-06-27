@@ -33,9 +33,9 @@ public class ForwardMailsToTelegram {
 
     private long getChatIdFromEmailId(String emailFor) throws Exception {
         String url = "http://" +
-                     trashemailConfig.getHost()+ ":" +
-                     trashemailConfig.getPort() +
-                     trashemailConfig.getPath() ;
+                trashemailConfig.getHost() + ":" +
+                trashemailConfig.getPort() +
+                trashemailConfig.getPath();
 
         log.debug(url);
 
@@ -54,12 +54,12 @@ public class ForwardMailsToTelegram {
         }
          */
         Map<String, Object> response = restTemplate.getForObject(
-            builder.toUriString(),
-            Map.class
+                builder.toUriString(),
+                Map.class
         );
-        Long chatId = (Long) ((Integer)response.get("chatId")).longValue();
+        Long chatId = (Long) ((Integer) response.get("chatId")).longValue();
 
-        if(chatId == null){
+        if (chatId == null) {
             throw new Exception("Chat id not found ..");
         }
         return chatId;
@@ -89,16 +89,28 @@ public class ForwardMailsToTelegram {
                         parsedMail.getHtmlContent());
 
                 if (filename != null)
-                  sendTelegramMessage.sendMessage(parsedMail.toString(),
-                                                  chatId,
-                                                  (String) filename);
+                    sendTelegramMessage.sendMessage(parsedMail.toString(),
+                            chatId,
+                            (String) filename);
                 else {
-                  sendTelegramMessage.sendMessage(parsedMail.toString(),
-                                                  chatId);
+                    sendTelegramMessage.sendMessage(parsedMail.toString(),
+                            chatId);
+                }
+                if (parsedMail.getAttachmentSet()) {
+                    if (!parsedMail.attachmentList.isEmpty()) {
+                        for (String location : parsedMail.attachmentList)
+                            sendTelegramMessage.sendDocuments(location, chatId);
+                    }
                 }
             } else {
                 sendTelegramMessage.sendMessage(parsedMail.toString(),
-                                                chatId);
+                        chatId);
+                if (parsedMail.getAttachmentSet()) {
+                    if (!parsedMail.attachmentList.isEmpty()) {
+                        for (String location : parsedMail.attachmentList)
+                            sendTelegramMessage.sendDocuments(location, chatId);
+                    }
+                }
             }
         }
     }
