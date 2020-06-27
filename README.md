@@ -8,6 +8,11 @@
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/TrashEmail/TrashEmail)
 ![GitHub issues](https://img.shields.io/github/issues/TrashEmail/TrashEmail)
 ![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed/TrashEmail/TrashEmail)
+![Twitter Follow](https://img.shields.io/twitter/follow/sehgal_rohit?style=social)
+![GitHub followers](https://img.shields.io/github/followers/r0hi7?style=social)
+
+
+ <a target="_blank" href="https://twitter.com/intent/tweet?text=TrashEmail%20is%20open%20source%20extremely%20privacy%20focused%20disposable%2Fsemi-permanent%20email%20bot%20solution%20for%20telegram.%20Do%20check%20this%20out.&url=https%3A%2F%2Fgithub.com%2FTrashEmail%2FTrashEmail%2F&hashtags=privacy,osint,temp_mail,disposable_mail,telegram_bot" title="Share on Twitter"><img src="https://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Share%20on%20Twitter"></a>
 
 
 ### tl;dr
