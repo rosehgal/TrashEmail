@@ -13,11 +13,14 @@ import io.github.trashemail.models.User;
 
 @Repository
 public interface UserRepository extends CrudRepository<User, Integer>{
-	public List<User> findByChatId(long chatId);
-	public User findByEmailId(String emailId);
-	public boolean existsByEmailId(String emailId);
+	public List<User> findByChatIdAndIsActiveTrue(long chatId);
+	public User findByEmailIdAndIsActiveTrue(String emailId);
+	public User findByEmailIdAndChatId(String emailId , long chatId);
+	public boolean existsByEmailIdAndIsActiveTrue(String emailId);
 	public void delete(User user);
+
 	public long count();
+
 	public List<User> findByEmailIdEndsWith(String domain);
 
 	@Query(value = "select max(u.id) from User u")

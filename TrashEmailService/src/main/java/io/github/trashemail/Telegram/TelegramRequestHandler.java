@@ -43,7 +43,10 @@ public class TelegramRequestHandler {
 	throws HttpClientErrorException{
 		Boolean isDeleted = emailServerInteraction.deleteEmailId(user);
 		if(isDeleted){
-			userRepository.delete(user);
+
+			user.setIsActive(false);
+			userRepository.save(user);
+
 			return "Email Id *deleted* and added to open pool.";
 		}
 		return "No mail ID on the server was identified with" +
@@ -96,8 +99,10 @@ public class TelegramRequestHandler {
 				);
 
 			case "/create":
-				if(userRepository.findByChatId(chatId).size() >= trashemailConfig.getMaxEmailsPerUser()) {
-					responseText =  "Only " + trashemailConfig.getMaxEmailsPerUser() + " " +
+				if(userRepository.findByChatIdAndIsActiveTrue(chatId).size()
+						>= trashemailConfig.getMaxEmailsPerUser()) {
+					responseText =  "Only " +
+							trashemailConfig.getMaxEmailsPerUser() + " " +
 							"email Ids are allowed per-user\n" +
 							"You can get the list of all the emails @ /emails";
 					return new TelegramResponse(
@@ -110,7 +115,7 @@ public class TelegramRequestHandler {
 					if(argument != null) {
 							/*
 							User entered something like : /create username.
-							No offer him interactive response.
+							Now offer him interactive response.
 							*/
 						String emailRegex = "^[A-Za-z0-9._%+-]+@(" +
 								String.join("|",
@@ -122,11 +127,12 @@ public class TelegramRequestHandler {
 						// A valid domain email is inputted by the user
 						if (matcher.matches()) {
 							String emailId = argument;
-							if(userRepository.existsByEmailId(emailId)){
+							if(userRepository.existsByEmailIdAndIsActiveTrue(
+									emailId)){
 								// Email ID Already taken
 								responseText = "Email ID *" + argument + "* " +
 										"is already taken, " +
-										"please get some other";
+										"please try some other email id.";
 								return new TelegramResponse(
 										chatId,
 										responseText
@@ -165,7 +171,19 @@ public class TelegramRequestHandler {
 							}
 
 							if(response!=null) {
-								userRepository.save(user);
+								// Check if the same user has taken the same
+								// email before, then it would exist in DB so
+								// just set isActive to true.
+								User existingUser =
+										userRepository.findByEmailIdAndChatId(
+										emailId,
+										chatId);
+								if(existingUser == null)
+									userRepository.save(user);
+								else{
+									existingUser.setIsActive(true);
+									userRepository.save(existingUser);
+								}
 								responseText =  "Email successfully created" +
 										" - " +
 										"" +
@@ -280,7 +298,8 @@ public class TelegramRequestHandler {
 			case "/emails":
 				String response = "Currently, you have below mentioned " +
 						"emails with you.\n*";
-				List<User> allEmailsWithUser = userRepository.findByChatId(
+				List<User> allEmailsWithUser =
+						userRepository.findByChatIdAndIsActiveTrue(
 						chatId);
 
 				for(User emailWithUser: allEmailsWithUser){
@@ -297,7 +316,8 @@ public class TelegramRequestHandler {
 				if(argument == null){
 					responseText = "Pick an email to delete.";
 
-					List<User> emailsWithUser = userRepository.findByChatId(
+					List<User> emailsWithUser =
+							userRepository.findByChatIdAndIsActiveTrue(
 							chatId);
 
 					int buttonPerRow = 1;
@@ -340,9 +360,10 @@ public class TelegramRequestHandler {
 					// A valid domain email is inputted by the user
 					if (matcher.matches()) {
 						String emailId = argument;
-						User user = userRepository.findByEmailId(emailId);
+						User user = userRepository.findByEmailIdAndIsActiveTrue(
+								emailId);
 						// user should only delete email owned by user.
-						if (userRepository.existsByEmailId(emailId)) {
+						if (userRepository.existsByEmailIdAndIsActiveTrue(emailId)) {
 							if (((Long) chatId).equals(user.getChatId())) {
 								responseText = this.deleteEmail(user);
 								return new TelegramResponse(

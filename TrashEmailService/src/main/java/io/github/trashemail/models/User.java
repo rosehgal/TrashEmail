@@ -6,11 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -25,7 +21,6 @@ public class User {
 	private Integer id;
 	private long chatId;
 
-	@Column(unique = true)
 	private String emailId;
 
 	private String forwardsTo;
@@ -33,10 +28,18 @@ public class User {
 	@CreationTimestamp
 	private LocalDateTime createDateTime;
 
-	public User(long chatId, String emailId, String forwardsTo) {
+	private Boolean isActive;
+
+	public User(long chatId, String emailId, String forwardsTo,
+				Boolean isActive) {
 		this.chatId = chatId;
 		this.emailId = emailId;
 		this.forwardsTo = forwardsTo;
+		this.isActive = isActive;
+	}
+
+	public User(long chatId, String emailId, String forwardsTo) {
+		this(chatId, emailId, forwardsTo, Boolean.TRUE);
 	}
 
 	@Override

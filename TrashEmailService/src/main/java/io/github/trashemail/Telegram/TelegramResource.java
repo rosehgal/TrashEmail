@@ -91,7 +91,7 @@ public class TelegramResource {
     @GetMapping(value = "/getChatId")
 	public User getChatIdFortargetEmailAddress(@RequestParam String emailId){
 
-    	User user = userRepository.findByEmailId(emailId);
+    	User user = userRepository.findByEmailIdAndIsActiveTrue(emailId);
 		emailCounterRepository.updateCount();
 
 		return user;
