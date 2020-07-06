@@ -69,29 +69,17 @@ public class TelegramRequestHandler {
 		switch(command){
 			case "/start":
 				responseText =  "Thanks for joining ...\n" +
-						"I am a disposable bot email id generator that can:\n" +
+						"I am a *disposable email* id generator bot that " +
+						"can:\n" +
 						"1. Quickly generate a disposable email for you," +
 						" no email management hassle \uD83D\uDE0B\t\n" +
-						"2. Quickly delete those emailIds\n" +
-						"3. Since I own, " +
-						"*trashemail.in*, *humblemail.com* & *thromail.com* " +
-						"your emailId will belong these domains\n" +
-						"4. I dont read anything, I respect your privacy." +
-						"Any doubt? Audit my source code." +
-						"\n\n" +
-						"I am still a baby and learning.\n" +
-						"Do you have idea for addon? " +
-						"Please feel free to reach @" +
-						" https://github.com/r0hi7/Trashemail" +
-						" and raise an issue. " +
-						"I will definitely work out on that" +
-						"\n\n" +
+						"2. Quickly delete those email addresses\n" +
+
 						"For now to get started try\n" +
-						"* /create <user>@("+
-						String.join("|", emailServerConfig.getHosts()) +")\n" +
-						"* /delete emailId\n" +
+						"* /create <user>\n" +
+						"* /delete\n" +
 						"* /help\n" +
-						"* /emails\n";
+						"* /list_ids\n";
 
 				return new TelegramResponse(
 						chatId,
@@ -279,15 +267,14 @@ public class TelegramRequestHandler {
 				responseText = "Create disposable email addresses to " +
 						"protect you against spam and newsletters." +
 						"E-Mail forwarding made easy.\n" +
-						"I am open source and runs on open source services." +
-						"You can find my heart, soul and brain at:" +
-						" https://github.com/r0hi7/Trashemail\n\n"+
+						"I am open source and runs on open source services.\n" +
+
 						"Currently, I support:\n" +
 						"/create - That can get you one(or more) " +
 						"custom disposable emails.\n" +
 						"/delete - If you are getting spams for any mail id, " +
 						"just delete it because it is disposable.\n" +
-						"/emails - Get the list of all the emailIds " +
+						"/list_ids - Get the list of all the email Ids "+
 						"that belongs to you.\n" +
 						"/help - this help message.\n";
 				return new TelegramResponse(
@@ -295,9 +282,9 @@ public class TelegramRequestHandler {
 						responseText
 				);
 
-			case "/emails":
-				String response = "Currently, you have below mentioned " +
-						"emails with you.\n*";
+			case "/list_ids":
+				String response = "Currently, you have these email ids with " +
+						"you. \n";
 				List<User> allEmailsWithUser =
 						userRepository.findByChatIdAndIsActiveTrue(
 						chatId);
@@ -306,7 +293,6 @@ public class TelegramRequestHandler {
 					response += emailWithUser + "\n";
 				}
 
-				response+="*";
 				return new TelegramResponse(
 						chatId,
 						response
@@ -405,13 +391,49 @@ public class TelegramRequestHandler {
 
 				break;
 
+			case "/follow":
+				String follow_response = "Follow me on: \n" +
+						"Twitter : https://twitter.com/sehgal_rohit" +
+						"GitHub : https://github.com/r0hi7";
+
+				return new TelegramResponse(
+						chatId,
+						follow_response
+				);
+
+			case "/sponsor":
+				String sponsor_response = "Average running cost of this " +
+						"per-month is $30, if you like the idea and would " +
+						"like to sponsor then you can buy me a " +
+						"coffee: https://www.buymeacoffee.com/r0hi7";
+				return new TelegramResponse(
+						chatId,
+						sponsor_response
+				);
+
+			case "/like":
+				String like_response = "*If* you like the idea and this " +
+						"product, do drop a star at github repo (where my " +
+						"hear and soul lives).\n Every star " +
+						"really " +
+						"motivates me :)\n"+
+						"https://github.com/TrashEmail/TrashEmail";
+				return new TelegramResponse(
+						chatId,
+						like_response
+				);
+
 			default:
-				responseText = "I dont understand that ...\n " +
+				responseText = "I don't understand that ...\n " +
 						"I only understand few commands.\n" +
 						"1. /create <user>\n" +
 						"2. /delete\n" +
 						"3. /help\n" +
-						"4. /emails\n";
+						"4. /list_ids\n"+
+						"5. /follow\n" +
+						"6. /like\n"+
+						"7. /sponsor";
+
 				return new TelegramResponse(
 						chatId,
 						responseText
