@@ -11,8 +11,14 @@ imap-client-service:
   imap:
     host: trashemail.in
     port: 993
-    email: contact@trashemail.in
-    password: changeme
+    emails:
+      - contact@trashemail.in
+      - contact2@trashemail.in
+      - contact3@trashemail.in
+    passwords:
+      - changeme
+      - changeme
+      - changeme
   emails:
     hostPath: http://192.168.225.39:8000/
     downloadPath: /tmp/

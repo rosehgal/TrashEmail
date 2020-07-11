@@ -1,0 +1,44 @@
+# Tomcat server settings
+server:
+  port: 9090
+
+#Email server configuration for SMTP alias creation
+email-server:
+  hosts:
+    - trashemail.in
+    - thromail.com
+    - humblemail.com
+  admin-email: contact@trashemail.in
+  admin-password: sample
+  add-url: https://trashemail.in/admin/mail/aliases/add
+  remove-url: https://trashemail.in/admin/mail/aliases/remove
+  target-alias: demo@trashemail.in
+
+
+# Sample config for connecting with mysql-docker
+spring:
+  datasource:
+    url: jdbc:mysql://mysql:3306/trashemail
+    username: root
+    password: changeme
+    driver-class-name: com.mysql.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  application:
+    name: Trashemail
+
+
+
+# Trashemail app server settings
+trashemail:
+  max-emails-per-user: 4
+
+# Logger settings
+logging:
+  level:
+    io:
+      github:
+        trashemail: debug

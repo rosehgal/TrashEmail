@@ -2,6 +2,7 @@ package io.github.trashemail.Telegram;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -96,7 +97,8 @@ public class TelegramRequestHandler {
 					responseText =  "Only " +
 							trashemailConfig.getMaxEmailsPerUser() + " " +
 							"email Ids are allowed per-user\n" +
-							"You can get the list of all the emails @ /emails";
+							"You can get the list of all the email ids @ \n" +
+							"/list\\_ids";
 					return new TelegramResponse(
 							chatId,
 							responseText
@@ -104,6 +106,7 @@ public class TelegramRequestHandler {
 				}
 
 				else{
+					Random random = new Random();
 					if(argument != null) {
 							/*
 							User entered something like : /create username.
@@ -131,9 +134,14 @@ public class TelegramRequestHandler {
 								);
 							}
 
-							User user = new User(chatId,
-									emailId,
-									emailServerConfig.getTargetAlias());
+							User user = new User(
+								chatId,
+								emailId,
+								emailServerConfig.getTargetAlias().get(
+									random.nextInt(emailServerConfig
+													.getTargetAlias()
+													.size())
+								));
 
 							String response = null;
 							try {
@@ -180,7 +188,8 @@ public class TelegramRequestHandler {
 										" - " +
 										"" +
 										"*"+argument+"*" +
-										"\n See all your emails @ /emails";
+										"\n See all your email ids @ " +
+										"/list\\_ids";
 
 								return new TelegramResponse(
 										chatId,
@@ -188,7 +197,6 @@ public class TelegramRequestHandler {
 								);
 							}
 
-							log.error(response);
 							responseText = "Something bad just happened with " +
 									"me." +
 									"Stay back till I get fixed.";

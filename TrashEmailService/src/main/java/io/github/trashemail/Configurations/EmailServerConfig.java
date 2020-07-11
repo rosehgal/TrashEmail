@@ -18,7 +18,7 @@ public class EmailServerConfig {
     private String adminPassword;
     private String addUrl;
     private String removeUrl;
-    private String targetAlias;
+    private List<String> targetAlias;
 
     @Override public String toString() {
         return "EmailServerConfig{" +

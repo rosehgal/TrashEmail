@@ -1,5 +1,6 @@
 package io.github.trashemail.EmailsToTelegramService;
 
+import io.github.trashemail.EmailsToTelegramService.Configuration.ImapClientServiceConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -11,12 +12,17 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+
 @SpringBootApplication
 @EnableAsync
 public class EmailsToTelegramServiceApplication implements CommandLineRunner {
 
     @Autowired
     ImapClient imapClient;
+
+    @Autowired
+    ImapClientServiceConfig imapClientServiceConfig;
 
     public static void main(String[] args) {
         SpringApplication
@@ -40,6 +46,14 @@ public class EmailsToTelegramServiceApplication implements CommandLineRunner {
 
     @Override
     public void run(String...args) throws Exception{
-        imapClient.fetchNewEmails();
+        List<String> emails = imapClientServiceConfig.getImap().getEmails();
+        List<String> passwords =
+                imapClientServiceConfig.getImap().getPasswords();
+
+        for(int i=0; i<emails.size(); ++i)
+            imapClient.fetchNewEmails(
+                    emails.get(i),
+                    passwords.get(i)
+            );
     }
 }

@@ -40,14 +40,19 @@ public class ImapClient {
 
     @PostConstruct
     public void init() {
-        username = imapClientServiceConfig.getImap().getEmail();
-        password = imapClientServiceConfig.getImap().getPassword();
         imapHost = imapClientServiceConfig.getImap().getHost();
         imapPort = imapClientServiceConfig.getImap().getPort();
     }
 
-    @Async("threadPoolTaskExecutor")
-    public void fetchNewEmails() throws Exception {
+    @Async
+    public void fetchNewEmails(String user, String pass)
+    throws Exception {
+        this.username = user;
+        this.password = pass;
+
+        log.debug(user);
+        log.debug(username);
+
         Properties mailProps = new Properties();
         mailProps.put("mail.store.protocol", "imaps");
         mailProps.put("mail.imaps.host", imapHost);
