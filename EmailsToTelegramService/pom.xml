@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>io.github.trashemail</groupId>
-    <artifactId>imapclientservice</artifactId>
+    <artifactId>EmailsToTelegramService</artifactId>
     <version>2.2.2</version>
     <name>EmailsToTelegramService</name>
     <description>IMAP Client background services for TrashEmail</description>
