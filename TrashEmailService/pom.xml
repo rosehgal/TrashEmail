@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>io.github</groupId>
-	<artifactId>trashemail</artifactId>
-	<version>2.2.2</version>
-	<name>Trashemail</name>
+	<artifactId>TrashEmailService</artifactId>
+	<version>3.0.0</version>
+	<name>TrashEmailService</name>
 	<description>Springboot miscroservice - heart of Telegram @trashemail_bot</description>
 	<distributionManagement>
 	<repository>
