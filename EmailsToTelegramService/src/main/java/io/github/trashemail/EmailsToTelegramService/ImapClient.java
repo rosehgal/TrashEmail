@@ -1,62 +1,52 @@
 package io.github.trashemail.EmailsToTelegramService;
 
-
-import io.github.trashemail.EmailsToTelegramService.Configuration.ImapClientServiceConfig;
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.imap.IMAPStore;
 import com.sun.mail.imap.protocol.IMAPProtocol;
 import com.sun.mail.iap.ProtocolException;
 
+import io.github.trashemail.EmailsToTelegramService.context.SpringContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import javax.mail.*;
 import javax.mail.event.MessageCountAdapter;
 import javax.mail.event.MessageCountEvent;
 import java.util.Properties;
-
-@Configuration
-@Component
 @EnableAsync
 public class ImapClient {
-
-    @Autowired
-    ImapClientServiceConfig imapClientServiceConfig;
-    @Autowired
-    ForwardMailsToTelegram forwardMailsToTelegram;
-
     private static final Logger log = LoggerFactory.getLogger(ImapClient.class);
 
-    private static String username;
-    private static String password;
-    private static String imapHost;
-    private static String imapPort;
+    private String username;
+    private String password;
+    private String imapHost;
+    private String imapPort;
+    private ForwardMailsToTelegram forwardMailsToTelegram;
 
-    @PostConstruct
-    public void init() {
-        imapHost = imapClientServiceConfig.getImap().getHost();
-        imapPort = imapClientServiceConfig.getImap().getPort();
+    public ImapClient(
+            String imapHost,
+            String imapPort,
+            String username,
+            String password) {
+
+        this.username = username;
+        this.password = password;
+        this.imapHost = imapHost;
+        this.imapPort = imapPort;
+        this.forwardMailsToTelegram =
+                SpringContext.getBean(ForwardMailsToTelegram.class);
     }
 
-    @Async
-    public void fetchNewEmails(String user, String pass)
+    @Async("threadPooltaskExecutor")
+    public void fetchNewEmails()
     throws Exception {
-        this.username = user;
-        this.password = pass;
-
-        log.debug(user);
-        log.debug(username);
 
         Properties mailProps = new Properties();
         mailProps.put("mail.store.protocol", "imaps");
-        mailProps.put("mail.imaps.host", imapHost);
-        mailProps.put("mail.imaps.port", imapPort);
+        mailProps.put("mail.imaps.host", this.imapHost);
+        mailProps.put("mail.imaps.port", this.imapPort);
         mailProps.put("mail.imaps.timeout", "10000");
         mailProps.put("mail.imaps.ssl.protocols", "TLSv1.2");
 
@@ -66,7 +56,7 @@ public class ImapClient {
 
         try {
             store = (IMAPStore) session.getStore("imaps");
-            store.connect(username, password);
+            store.connect(this.username, this.password);
 
             if (!store.hasCapability("IDLE")) {
                 throw new RuntimeException("IDLE not supported");
@@ -95,7 +85,10 @@ public class ImapClient {
             while (!Thread.interrupted()) {
                 try {
                     ensureOpen(inbox);
-                    log.info("IMAP client: IDLE Listening state ...");
+                    log.info(
+                        String.format("IMAP client: Connecting %s IDLE...",
+                                      this.username)
+                    );
                     ((IMAPFolder) inbox).idle();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -118,7 +111,7 @@ public class ImapClient {
         }
     }
 
-    private static class KeepAliveRunnable implements Runnable {
+    private class KeepAliveRunnable implements Runnable {
 
         private static final long KEEP_ALIVE_FREQ = 240000; // 4 minutes
 
@@ -135,7 +128,10 @@ public class ImapClient {
                     Thread.sleep(KEEP_ALIVE_FREQ);
 
                     // Perform a NOOP just to keep alive the connection
-                    log.debug("Performing a NOOP to keep alive the connection");
+                    log.debug(
+                        String.format("NOOP connecting to %s",
+                                      username)
+                    );
                     folder.doCommand(new IMAPFolder.ProtocolCommand() {
                         public Object doCommand(IMAPProtocol protocol)
                                 throws ProtocolException {
@@ -145,7 +141,8 @@ public class ImapClient {
                     });
                 } catch (InterruptedException e) {
                 } catch (MessagingException e) {
-                    log.warn("Unexpected exception while keeping alive the IDLE connection", e);
+                    log.warn("Unexpected exception while keeping " +
+                                     "alive the IDLE connection", e);
                 }
             }
         }
@@ -161,7 +158,7 @@ public class ImapClient {
 
     }
 
-    public static void close(final Store store) {
+    public void close(final Store store) {
         try {
             if (store != null && store.isConnected()) {
                 store.close();
@@ -171,13 +168,13 @@ public class ImapClient {
 
     }
 
-    public static void ensureOpen(final Folder folder)
+    public void ensureOpen(final Folder folder)
             throws MessagingException {
 
         if (folder != null) {
             Store store = folder.getStore();
             if (store != null && !store.isConnected()) {
-                store.connect(username, password);
+                store.connect(this.username, this.password);
             }
         } else {
             throw new MessagingException("Unable to open a null folder");
@@ -185,7 +182,8 @@ public class ImapClient {
 
         if (folder.exists() && !folder.isOpen() && (folder.getType() &
                 Folder.HOLDS_MESSAGES) != 0) {
-            log.info("Opening folder " + folder.getFullName());
+            log.info("Opening folder " + folder.getFullName() +" for user "
+                             + username);
             folder.open(Folder.READ_ONLY);
             if (!folder.isOpen())
                 throw new MessagingException("Unable to open folder " +

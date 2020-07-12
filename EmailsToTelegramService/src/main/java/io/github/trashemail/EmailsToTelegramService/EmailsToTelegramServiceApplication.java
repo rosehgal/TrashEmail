@@ -12,14 +12,13 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @SpringBootApplication
 @EnableAsync
 public class EmailsToTelegramServiceApplication implements CommandLineRunner {
-
-    @Autowired
-    ImapClient imapClient;
 
     @Autowired
     ImapClientServiceConfig imapClientServiceConfig;
@@ -46,14 +45,32 @@ public class EmailsToTelegramServiceApplication implements CommandLineRunner {
 
     @Override
     public void run(String...args) throws Exception{
-        List<String> emails = imapClientServiceConfig.getImap().getEmails();
-        List<String> passwords =
-                imapClientServiceConfig.getImap().getPasswords();
+        Integer count = imapClientServiceConfig
+                            .getImap()
+                            .getEmails().size();
 
-        for(int i=0; i<emails.size(); ++i)
-            imapClient.fetchNewEmails(
-                    emails.get(i),
-                    passwords.get(i)
+        List<CompletableFuture<Void>> jobs = new ArrayList<>();
+        for(int i=0; i < count; ++i) {
+            ImapClient finalImapClient = new ImapClient(
+                    imapClientServiceConfig.getImap().getHost(),
+                    imapClientServiceConfig.getImap().getPort(),
+                    imapClientServiceConfig.getImap().getEmails().get(i),
+                    imapClientServiceConfig.getImap().getPasswords().get(i)
             );
+
+            CompletableFuture<Void> job_i = CompletableFuture.runAsync(
+                    () -> {
+                        try {
+                            finalImapClient.fetchNewEmails();
+                        }
+                        catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+            );
+            jobs.add(job_i);
+        }
+        for(CompletableFuture job : jobs)
+            CompletableFuture.allOf(job).join();
     }
 }
