@@ -21,6 +21,8 @@ public class UsedUserIds {
     @GeneratedValue
     private Long id;
 
+    private Long chatId;
+    private Boolean isActive;
     private String userId;
 
     @CreationTimestamp
