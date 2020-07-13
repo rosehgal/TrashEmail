@@ -3,11 +3,13 @@ package io.github.trashemail.models;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -20,5 +22,8 @@ public class UsedUserIds {
     private Long id;
 
     private String userId;
+
+    @CreationTimestamp
+    private LocalDateTime createDateTime;
 }
 
