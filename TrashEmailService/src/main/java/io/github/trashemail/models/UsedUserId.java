@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Table(name = "used_user_ids")
 public class UsedUserId {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Long chatId;

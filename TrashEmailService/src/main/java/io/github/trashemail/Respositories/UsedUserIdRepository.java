@@ -1,9 +1,10 @@
 package io.github.trashemail.Respositories;
 
 import io.github.trashemail.models.UsedUserId;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface UsedUserIdRepository
@@ -12,6 +13,10 @@ public interface UsedUserIdRepository
     public UsedUserId findByUserId(String userId);
 
     public List<UsedUserId> findAllByCreateDateTimeBetween(
-            Date begin, Date end);
+            LocalDateTime begin, LocalDateTime end);
 
+    @Query(value = "SELECT * FROM used_user_ids " +
+                    "where create_date_time <= " +
+                    "NOW() - INTERVAL 10 MINUTE", nativeQuery = true)
+    public List<UsedUserId> getUserIdsCreatedBeforeTenMinutes();
 }
