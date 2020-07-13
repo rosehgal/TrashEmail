@@ -449,7 +449,7 @@ public class TelegramRequestHandler {
 						"1. /create <user>\n" +
 						"2. /delete\n" +
 						"3. /help\n" +
-						"4. /list\\_id\n"+
+						"4. /list\\_ids\n"+
 						"5. /follow\n" +
 						"6. /like\n"+
 						"7. /sponsor";
