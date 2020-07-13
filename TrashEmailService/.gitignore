@@ -16,6 +16,8 @@ bin/
 *.html
 ./EmailsToTelegramService/src/main/resources/application-qa.yml
 *.yml
+./EmailsToTelegramService/src/main/resources/application.yml
+*.dat
 
 ### STS ###
 .apt_generated

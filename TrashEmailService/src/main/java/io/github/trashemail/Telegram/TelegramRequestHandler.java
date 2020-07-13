@@ -8,9 +8,13 @@ import java.util.regex.Pattern;
 
 import io.github.trashemail.Configurations.EmailServerConfig;
 import io.github.trashemail.Configurations.TrashemailConfig;
+import io.github.trashemail.Respositories.FreeUserIdRepository;
+import io.github.trashemail.Respositories.UsedUserIdRepository;
 import io.github.trashemail.Telegram.DTO.TelegramResponse;
 import io.github.trashemail.Telegram.DTO.messageEntities.InlineKeyboardButton;
 import io.github.trashemail.Telegram.DTO.messageEntities.InlineKeyboardMarkup;
+import io.github.trashemail.models.FreeUserId;
+import io.github.trashemail.models.UsedUserId;
 import io.github.trashemail.utils.exceptions.EmailAliasNotCreatedExecption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +33,10 @@ public class TelegramRequestHandler {
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
+	private UsedUserIdRepository usedUserIdRepository;
+	@Autowired
+	private FreeUserIdRepository freeUserIdRepository;
+	@Autowired
 	private EmailServerConfig emailServerConfig;
 	@Autowired
 	private TrashemailConfig trashemailConfig;
@@ -44,11 +52,19 @@ public class TelegramRequestHandler {
 	throws HttpClientErrorException{
 		Boolean isDeleted = emailServerInteraction.deleteEmailId(user);
 		if(isDeleted){
-
 			user.setIsActive(false);
 			userRepository.save(user);
 
-			return "Email Id *deleted* and added to open pool.";
+			UsedUserId usedUserId =
+					usedUserIdRepository.findByUserId(user.getEmailId());
+			if(usedUserId != null) {
+				usedUserIdRepository.delete(usedUserId);
+
+				FreeUserId freeUserId = new FreeUserId();
+				freeUserId.setUserId(user.getEmailId());
+				freeUserIdRepository.save(freeUserId);
+			}
+			return "Email ID *deleted* and added to open pool.";
 		}
 		return "No mail ID on the server was identified with" +
 				user.getEmailId();
@@ -443,13 +459,89 @@ public class TelegramRequestHandler {
 						chatId,
 						source_response
 				);
+
+
+			case "/generate":
+				String generate_response = "";
+				if(usedUserIdRepository.findByChatIdAndIsActiveTrue(chatId).size()>=2)
+					generate_response = "You already have two random emails " +
+							"ids";
+				else {
+					FreeUserId freeUserId =
+							freeUserIdRepository.findTopByOrderByIdAsc();
+
+					log.info(freeUserId.getUserId());
+
+					User user = new User();
+					user.setIsActive(true);
+					user.setChatId(chatId);
+					user.setEmailId(freeUserId.getUserId());
+
+					Random random = new Random();
+					user.setForwardsTo(
+							emailServerConfig.getTargetAlias().get(
+									random.nextInt(emailServerConfig
+														   .getTargetAlias()
+														   .size()))
+					);
+					try {
+
+						response = this.createEmail(user);
+
+					}
+					catch (EmailAliasNotCreatedExecption emailAliasNotCreatedExecption) {
+						log.error("Exception " +
+										  emailAliasNotCreatedExecption.getMessage());
+						responseText = "Email address is already taken." +
+								"\n" +
+								"Please try something else.";
+						return new TelegramResponse(
+								chatId,
+								responseText
+						);
+
+					}
+					catch (HttpClientErrorException httpClientErrorException) {
+
+						log.error("Exception " +
+										  httpClientErrorException.getMessage());
+						responseText = "Email address is already taken." +
+								"\nPlease try something else.";
+						return new TelegramResponse(
+								chatId,
+								responseText
+						);
+					}
+
+					if (response != null) {
+					/*
+					Perform this if the user id is created on the server
+					*/
+						freeUserIdRepository.delete(freeUserId);
+
+						UsedUserId usedUserId = new UsedUserId();
+						usedUserId.setChatId(chatId);
+						usedUserId.setIsActive(true);
+						usedUserId.setUserId(freeUserId.getUserId());
+						usedUserIdRepository.save(usedUserId);
+
+						userRepository.save(user);
+
+						generate_response = "Email Id : " + user.getEmailId() +
+								" created.\nThis will get disposed after 10 " +
+								"mins";
+					}
+				}
+				return new TelegramResponse(
+						chatId,
+						generate_response);
 			default:
 				responseText = "I don't understand that ...\n " +
 						"I only understand few commands.\n" +
 						"1. /create <user>\n" +
 						"2. /delete\n" +
 						"3. /help\n" +
-						"4. /list\\_id\n"+
+						"4. /list\\_ids\n"+
 						"5. /follow\n" +
 						"6. /like\n"+
 						"7. /sponsor";
