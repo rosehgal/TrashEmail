@@ -52,11 +52,19 @@ public class TelegramRequestHandler {
 	throws HttpClientErrorException{
 		Boolean isDeleted = emailServerInteraction.deleteEmailId(user);
 		if(isDeleted){
-
 			user.setIsActive(false);
 			userRepository.save(user);
 
-			return "Email Id *deleted* and added to open pool.";
+			UsedUserId usedUserId =
+					usedUserIdRepository.findByUserId(user.getEmailId());
+			if(usedUserId != null) {
+				usedUserIdRepository.delete(usedUserId);
+
+				FreeUserId freeUserId = new FreeUserId();
+				freeUserId.setUserId(user.getEmailId());
+				freeUserIdRepository.save(freeUserId);
+			}
+			return "Email ID *deleted* and added to open pool.";
 		}
 		return "No mail ID on the server was identified with" +
 				user.getEmailId();

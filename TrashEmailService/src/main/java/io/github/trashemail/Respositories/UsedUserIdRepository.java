@@ -9,6 +9,7 @@ import java.util.List;
 public interface UsedUserIdRepository
         extends CrudRepository<UsedUserId, Integer> {
     public List<UsedUserId> findByChatIdAndIsActiveTrue(long chatId);
+    public UsedUserId findByUserId(String userId);
 
     public List<UsedUserId> findAllByCreateDateTimeBetween(
             Date begin, Date end);
