@@ -2,3 +2,6 @@
 	path = TrashEmailFetchMail
 	url = git@github.com:TrashEmail/TrashEmailFetchMail.git
 	branch = master
+[submodule "TrashEmailTelegramConnector"]
+	path = TrashEmailTelegramConnector
+	url = git@github.com:TrashEmail/TrashEmailTelegramConnector.git
