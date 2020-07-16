@@ -1,6 +1,5 @@
 package io.github.trashemail.DTO;
 
-import io.github.trashemail.utils.DaysAndEmailsCount;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,5 +19,4 @@ public class TrashemailStats {
     private String version;
     private Long numberOfEmailsProcessed;
     private Long totalNumberOfUsers;
-    private List<DaysAndEmailsCount> cummulativeEmailsCountPerDay;
 }

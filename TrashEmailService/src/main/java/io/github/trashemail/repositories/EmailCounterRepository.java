@@ -1,4 +1,4 @@
-package io.github.trashemail.Respositories;
+package io.github.trashemail.repositories;
 
 import io.github.trashemail.models.EmailCounter;
 import org.springframework.data.jpa.repository.Modifying;
