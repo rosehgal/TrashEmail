@@ -1,5 +1,6 @@
 package io.github.trashemail.models;
 
+import io.github.trashemail.DTO.CreateEmailRequest;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,4 +30,12 @@ public class EmailAllocation {
 
     @CreationTimestamp
     private LocalDateTime createDateTime;
+
+    public EmailAllocation(CreateEmailRequest emailRequest){
+        this.emailId = emailRequest.getEmailId();
+        this.isActive = true;
+        this.source = emailRequest.getSource();
+        this.destination = emailRequest.getDestination();
+        this.destinationType = emailRequest.getDestinationType();
+    }
 }

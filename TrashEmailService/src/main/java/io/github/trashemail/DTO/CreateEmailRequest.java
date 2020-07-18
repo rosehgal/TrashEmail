@@ -10,6 +10,7 @@ import lombok.Setter;
 public class CreateEmailRequest {
     private String source;
     private String destination;
+    private String destinationType;
     private String emailId;
     private Boolean isActive;
 }

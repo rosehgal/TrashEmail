@@ -41,35 +41,30 @@ public class TrashEmailResource {
 
     @PostMapping(value = "/create")
     public ResponseEntity<CreateEmailResponse> createEmailId(@RequestBody CreateEmailRequest createEmailRequest){
-        EmailAllocation emailAllocation = new EmailAllocation();
-        CreateEmailResponse emailResponse = new CreateEmailResponse();
+        EmailAllocation emailAllocation = new EmailAllocation(createEmailRequest);
+        CreateEmailResponse createEmailResponse = new CreateEmailResponse();
 
         try{
-            emailAllocation.setDestination(createEmailRequest.getDestination());
-            emailAllocation.setEmailId(createEmailRequest.getEmailId());
-            emailAllocation.setSource(createEmailRequest.getSource());
 
             Random random = new Random();
             emailAllocation.setForwardsTo(
                     emailServerConfig.getTargetAlias().get(random.nextInt(emailServerConfig.getTargetAlias().size()))
             );
-            emailAllocation.setIsActive(true);
-            emailAllocation.setDestinationType(createEmailRequest.getDestination());
 
             emailServerInteraction.createEmailId(emailAllocation);
 
-            emailResponse.setCreated(true);
-            emailResponse.setMessage("Email Address created");
+            createEmailResponse.setCreated(true);
+            createEmailResponse.setMessage("Email Address created");
 
             emailAllocationRepository.save(emailAllocation);
-            return new ResponseEntity<>(emailResponse, HttpStatus.CREATED);
+            return new ResponseEntity<>(createEmailResponse, HttpStatus.CREATED);
 
         }catch(Exception exception){
-            emailResponse.setMessage(exception.getMessage());
-            emailResponse.setCreated(false);
+            createEmailResponse.setMessage(exception.getMessage());
+            createEmailResponse.setCreated(false);
         }
 
-        return new ResponseEntity<>(emailResponse, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(createEmailResponse, HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping(value = "/stats")
