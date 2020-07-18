@@ -9,6 +9,8 @@ import io.github.trashemail.models.EmailAllocation;
 import io.github.trashemail.repositories.EmailAllocationRepository;
 import io.github.trashemail.repositories.EmailCounterRepository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +44,9 @@ public class TrashEmailResource {
 
     @Autowired
     RestTemplate restTemplate;
+
+    private static final Logger log = LoggerFactory.getLogger(
+            TrashEmailResource.class);
 
     @PostMapping(value = "/create")
     public ResponseEntity<CreateEmailResponse> createEmailId(@RequestBody CreateEmailRequest createEmailRequest){
@@ -110,8 +115,10 @@ public class TrashEmailResource {
         return new ResponseEntity<>(deleteEmailResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping(value = "/sendMail")
+    @PostMapping(value = "/sendMail")
     public String sendMail(@RequestBody SendEmailRequest sendEmailRequest){
+        emailCounterRepository.updateCount();
+
         EmailAllocation emailAllocation = emailAllocationRepository.findByEmailIdAndIsActiveTrue(
                 sendEmailRequest.getEmailId());
         if(emailAllocation == null){
@@ -119,7 +126,8 @@ public class TrashEmailResource {
         }
 
         String mailTargetType = emailAllocation.getDestinationType();
-        if(mailTargetType == "url" || mailTargetType == "telegram"){
+
+        if(mailTargetType.equals("url") || mailTargetType.equals("telegram")){
             /*
             Create a post request
             */
@@ -134,7 +142,7 @@ public class TrashEmailResource {
             return (String) response.getBody();
 
         }
-        else if(mailTargetType == "email"){
+        else if(mailTargetType.equals("email")){
             /*
             Send Email
             */

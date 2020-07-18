@@ -38,4 +38,17 @@ public class EmailAllocation {
         this.destination = emailRequest.getDestination();
         this.destinationType = emailRequest.getDestinationType();
     }
+
+    @Override public String toString() {
+        return "EmailAllocation{" +
+                "id=" + id +
+                ", emailId='" + emailId + '\'' +
+                ", forwardsTo='" + forwardsTo + '\'' +
+                ", isActive=" + isActive +
+                ", source='" + source + '\'' +
+                ", destination='" + destination + '\'' +
+                ", destinationType='" + destinationType + '\'' +
+                ", createDateTime=" + createDateTime +
+                '}';
+    }
 }
