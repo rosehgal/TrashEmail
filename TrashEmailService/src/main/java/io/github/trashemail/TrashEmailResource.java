@@ -3,6 +3,7 @@ package io.github.trashemail;
 import io.github.trashemail.Configurations.EmailServerConfig;
 import io.github.trashemail.Configurations.TrashEmailConfig;
 import io.github.trashemail.DTO.*;
+import io.github.trashemail.exceptions.EmailAlreadyExsitExecption;
 import io.github.trashemail.exceptions.EmailNotFoundExecption;
 import io.github.trashemail.models.EmailAllocation;
 import io.github.trashemail.repositories.EmailAllocationRepository;
@@ -40,15 +41,29 @@ public class TrashEmailResource {
 
     @PostMapping(value = "/create")
     public ResponseEntity<CreateEmailResponse> createEmailId(@RequestBody CreateEmailRequest createEmailRequest){
-        EmailAllocation emailAllocation = new EmailAllocation(createEmailRequest);
         CreateEmailResponse createEmailResponse = new CreateEmailResponse();
-
         try{
+            EmailAllocation checkIfExist = emailAllocationRepository.findByEmailIdAndIsActiveTrue(
+                    createEmailRequest.getEmailId());
+            if(checkIfExist != null)
+                throw new EmailAlreadyExsitExecption();
 
-            Random random = new Random();
-            emailAllocation.setForwardsTo(
-                    emailServerConfig.getTargetAlias().get(random.nextInt(emailServerConfig.getTargetAlias().size()))
+            EmailAllocation emailAllocation = new EmailAllocation(createEmailRequest);
+            EmailAllocation existOlder = emailAllocationRepository.findByEmailIdAndDestinationAndDestinationType(
+              emailAllocation.getEmailId(),
+              emailAllocation.getDestination(),
+              emailAllocation.getDestinationType()
             );
+            if (existOlder != null)
+                emailAllocation = existOlder;
+            else {
+                Random random = new Random();
+                emailAllocation.setForwardsTo(
+                    emailServerConfig
+                        .getTargetAlias()
+                        .get(random.nextInt(emailServerConfig.getTargetAlias().size())));
+                }
+            emailAllocation.setIsActive(true);
 
             emailServerInteraction.createEmailId(emailAllocation);
 
