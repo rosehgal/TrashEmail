@@ -1,10 +1,10 @@
 package io.github.trashemail;
 
 import io.github.trashemail.Configurations.EmailServerConfig;
-import io.github.trashemail.Configurations.TrashemailConfig;
+import io.github.trashemail.Configurations.TrashEmailConfig;
 import io.github.trashemail.DTO.CreateEmailRequest;
 import io.github.trashemail.DTO.CreateEmailResponse;
-import io.github.trashemail.DTO.TrashemailStats;
+import io.github.trashemail.DTO.TrashEmailStats;
 import io.github.trashemail.models.EmailAllocation;
 import io.github.trashemail.repositories.EmailCounterRepository;
 
@@ -20,7 +20,7 @@ import java.util.Random;
 
 
 @RestController
-public class TrashemailResource {
+public class TrashEmailResource {
 
 
     @Autowired
@@ -30,7 +30,7 @@ public class TrashemailResource {
     EmailServerConfig emailServerConfig;
 
     @Autowired
-    TrashemailConfig trashemailConfig;
+    TrashEmailConfig trashemailConfig;
 
     @Autowired
     EmailServerInteraction emailServerInteraction;
@@ -56,8 +56,8 @@ public class TrashemailResource {
 
             return new ResponseEntity<>(emailResponse, HttpStatus.CREATED);
 
-        }catch(Exception execption){
-            emailResponse.setMessage(execption.getMessage());
+        }catch(Exception exception){
+            emailResponse.setMessage(exception.getMessage());
             emailResponse.setCreated(false);
         }
 
@@ -65,8 +65,8 @@ public class TrashemailResource {
     }
 
     @GetMapping(value = "/stats")
-    public TrashemailStats presentDashBoard(){
-        TrashemailStats trashemailStats = new TrashemailStats();
+    public TrashEmailStats presentDashBoard(){
+        TrashEmailStats trashemailStats = new TrashEmailStats();
 //        trashemailStats.setNumberOfUsers(
 //                userRepository.getDistinctChatIdCount()
 //        );

@@ -10,10 +10,10 @@ import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @EnableAsync
-public class TrashemailApplication {
+public class TrashEmailApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(TrashemailApplication.class, args);
+        SpringApplication.run(TrashEmailApplication.class, args);
     }
 
     @Bean

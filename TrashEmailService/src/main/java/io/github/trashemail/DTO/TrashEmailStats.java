@@ -10,7 +10,7 @@ import java.util.Map;
 @Getter
 @Setter
 @NoArgsConstructor
-public class TrashemailStats {
+public class TrashEmailStats {
     private Long numberOfUsers;
     private Long numberOfEmailsRegistered;
     private Map<String, Long> domainsToNumbers;
