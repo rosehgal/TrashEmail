@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Random;
 
@@ -38,6 +39,9 @@ public class TrashEmailResource {
 
     @Autowired
     EmailServerInteraction emailServerInteraction;
+
+    @Autowired
+    RestTemplate restTemplate;
 
     @PostMapping(value = "/create")
     public ResponseEntity<CreateEmailResponse> createEmailId(@RequestBody CreateEmailRequest createEmailRequest){
@@ -104,6 +108,39 @@ public class TrashEmailResource {
         }
 
         return new ResponseEntity<>(deleteEmailResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping(value = "/sendMail")
+    public String sendMail(@RequestBody SendEmailRequest sendEmailRequest){
+        EmailAllocation emailAllocation = emailAllocationRepository.findByEmailIdAndIsActiveTrue(
+                sendEmailRequest.getEmailId());
+        if(emailAllocation == null){
+            return "Mail target not active";
+        }
+
+        String mailTargetType = emailAllocation.getDestinationType();
+        if(mailTargetType == "url" || mailTargetType == "telegram"){
+            /*
+            Create a post request
+            */
+            String targetURI = emailAllocation.getDestination();
+            Email email = new Email(sendEmailRequest);
+
+            ResponseEntity response = restTemplate.postForEntity(
+                    targetURI,
+                    email,
+                    String.class
+            );
+            return (String) response.getBody();
+
+        }
+        else if(mailTargetType == "email"){
+            /*
+            Send Email
+            */
+        }
+
+        return "Mail Sent.";
     }
 
     @GetMapping(value = "/stats")
