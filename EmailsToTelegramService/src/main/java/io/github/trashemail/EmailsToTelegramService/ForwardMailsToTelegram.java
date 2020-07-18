@@ -91,7 +91,7 @@ public class ForwardMailsToTelegram {
                 if (filename != null)
                     sendTelegramMessage.sendMessage(parsedMail.toString(),
                             chatId,
-                            (String) filename);
+                            (String[]) filename);
                 else {
                     sendTelegramMessage.sendMessage(parsedMail.toString(),
                             chatId);

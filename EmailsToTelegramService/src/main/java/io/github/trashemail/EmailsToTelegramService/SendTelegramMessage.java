@@ -61,7 +61,7 @@ public class SendTelegramMessage {
     }
 
     @Async
-    public void sendMessage(String message, long chatId, String filename) {
+    public void sendMessage(String message, long chatId, String[] filename) {
         String telegramURI = imapClientServiceConfig.getTelegram().getUrl() +
                 imapClientServiceConfig.getTelegram().getBotToken() +
                 "/sendMessage";
@@ -93,16 +93,23 @@ public class SendTelegramMessage {
             */
             InlineKeyboardMarkup markupKeyboard = new InlineKeyboardMarkup();
 
-            InlineKeyboardButton keyboardButton = new InlineKeyboardButton();
-            keyboardButton.setText("HTML version");
-            keyboardButton.setUrl(
+            InlineKeyboardButton keyboardButtonSafeHTML = new InlineKeyboardButton();
+            keyboardButtonSafeHTML.setText("Safe HTML version");
+            keyboardButtonSafeHTML.setUrl(
                     imapClientServiceConfig.getEmails().getHostPath() +
-                            filename);
+                            filename[0]);
+
+            InlineKeyboardButton keyboardButtonUnSafeHTML = new InlineKeyboardButton();
+            keyboardButtonUnSafeHTML.setText("Unsafe HTML version");
+            keyboardButtonUnSafeHTML.setUrl(
+                    imapClientServiceConfig.getEmails().getHostPath() +
+                            filename[1]);
 
             List<List<InlineKeyboardButton>> buttonList = new ArrayList<>();
 
             buttonList.add(new ArrayList<>());
-            buttonList.get(0).add(keyboardButton);
+            buttonList.get(0).add(keyboardButtonSafeHTML);
+            buttonList.get(0).add(keyboardButtonUnSafeHTML);
 
             markupKeyboard.setInlineKeyboardButtonList(buttonList);
 

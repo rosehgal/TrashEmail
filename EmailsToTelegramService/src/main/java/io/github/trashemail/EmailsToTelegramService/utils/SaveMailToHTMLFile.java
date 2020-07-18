@@ -17,22 +17,32 @@ public class SaveMailToHTMLFile {
     private static final Logger log = LoggerFactory.getLogger(
             SaveMailToHTMLFile.class);
 
-    public Object saveToFile(String htmlContent){
+    private static String safeHTMLCSPPolicy = "<meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'self';style-src 'unsafe-inline';img-src 'self' data:\">";
+
+    public Object saveToFile(String htmlContent) {
         try {
-            String filename = UUID.randomUUID().toString() + ".html";
+            String safeHTMLFilename = UUID.randomUUID().toString() + "_safe" + ".html";
+            String UnSafeHTMLFilename = UUID.randomUUID().toString() + "_unsafe" + ".html";
 
             FileWriter myWriter = new FileWriter(
                     imapClientServiceConfig
                             .getEmails()
-                            .getDownloadPath() + filename);
+                            .getDownloadPath() + safeHTMLFilename);
+            myWriter.write(safeHTMLCSPPolicy + htmlContent);
+            myWriter.close();
+            log.debug("File written to disk: " + safeHTMLFilename);
+
+            myWriter = new FileWriter(
+                    imapClientServiceConfig
+                            .getEmails()
+                            .getDownloadPath() + UnSafeHTMLFilename);
 
             myWriter.write(htmlContent);
             myWriter.close();
+            log.debug("File written to disk: " + UnSafeHTMLFilename);
 
-            log.debug("File written to disk: "+ filename);
-            return filename;
-        }
-        catch (Exception e) {
+            return new String[]{safeHTMLFilename, UnSafeHTMLFilename};
+        } catch (Exception e) {
             log.error("Unable to save to HTML file. " + e.getMessage());
             return null;
         }
