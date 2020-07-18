@@ -5,4 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface EmailAllocationRepository
         extends CrudRepository<EmailAllocation, Long> {
+    EmailAllocation findByEmailIdAndIsActiveTrue(String emailId);
 }

@@ -2,9 +2,8 @@ package io.github.trashemail;
 
 import io.github.trashemail.Configurations.EmailServerConfig;
 import io.github.trashemail.Configurations.TrashEmailConfig;
-import io.github.trashemail.DTO.CreateEmailRequest;
-import io.github.trashemail.DTO.CreateEmailResponse;
-import io.github.trashemail.DTO.TrashEmailStats;
+import io.github.trashemail.DTO.*;
+import io.github.trashemail.exceptions.EmailNotFoundExecption;
 import io.github.trashemail.models.EmailAllocation;
 import io.github.trashemail.repositories.EmailAllocationRepository;
 import io.github.trashemail.repositories.EmailCounterRepository;
@@ -65,6 +64,31 @@ public class TrashEmailResource {
         }
 
         return new ResponseEntity<>(createEmailResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping(value = "/delete")
+    public ResponseEntity<DeleteEmailResponse> deleteEmailId(@RequestBody DeleteEmailRequest deleteEmailRequest){
+        EmailAllocation emailAllocation = emailAllocationRepository.findByEmailIdAndIsActiveTrue(
+                deleteEmailRequest.getEmailId());
+        DeleteEmailResponse deleteEmailResponse = new DeleteEmailResponse();
+        try{
+            if(emailAllocation == null)
+                throw new EmailNotFoundExecption();
+
+            emailServerInteraction.deleteEmailId(emailAllocation);
+            emailAllocation.setIsActive(false);
+            emailAllocationRepository.save(emailAllocation);
+
+            deleteEmailResponse.setEmailId(deleteEmailRequest.getEmailId());
+            deleteEmailResponse.setIsDeleted(true);
+            return new ResponseEntity<>(deleteEmailResponse, HttpStatus.OK);
+
+        }catch (Exception e){
+            deleteEmailResponse.setIsDeleted(false);
+            deleteEmailResponse.setError(e.getMessage());
+        }
+
+        return new ResponseEntity<>(deleteEmailResponse, HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping(value = "/stats")
