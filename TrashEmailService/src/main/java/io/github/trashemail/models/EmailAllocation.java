@@ -25,6 +25,7 @@ public class EmailAllocation {
 
     private String source;
     private String destination;
+    private String destinationType;
 
     @CreationTimestamp
     private LocalDateTime createDateTime;

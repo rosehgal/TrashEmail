@@ -6,6 +6,7 @@ import io.github.trashemail.DTO.CreateEmailRequest;
 import io.github.trashemail.DTO.CreateEmailResponse;
 import io.github.trashemail.DTO.TrashEmailStats;
 import io.github.trashemail.models.EmailAllocation;
+import io.github.trashemail.repositories.EmailAllocationRepository;
 import io.github.trashemail.repositories.EmailCounterRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class TrashEmailResource {
 
     @Autowired
     EmailCounterRepository emailCounterRepository;
+
+    @Autowired
+    EmailAllocationRepository emailAllocationRepository;
 
     @Autowired
     EmailServerConfig emailServerConfig;
@@ -49,11 +53,15 @@ public class TrashEmailResource {
             emailAllocation.setForwardsTo(
                     emailServerConfig.getTargetAlias().get(random.nextInt(emailServerConfig.getTargetAlias().size()))
             );
+            emailAllocation.setIsActive(true);
+            emailAllocation.setDestinationType(createEmailRequest.getDestination());
+
             emailServerInteraction.createEmailId(emailAllocation);
 
             emailResponse.setCreated(true);
             emailResponse.setMessage("Email Address created");
 
+            emailAllocationRepository.save(emailAllocation);
             return new ResponseEntity<>(emailResponse, HttpStatus.CREATED);
 
         }catch(Exception exception){
