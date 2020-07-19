@@ -14,7 +14,7 @@ public class Email {
     private String emailId;
     private String message;
     private Date arrived;
-    private String emailHostingLocation;
+    private String emailURI;
     private String emailDownloadPath;
     private List<String> attachmentsPaths;
 
@@ -22,7 +22,7 @@ public class Email {
         this.arrived = new Date();
         this.emailId = sendEmailRequest.getEmailId();
         this.message = sendEmailRequest.getMessage();
-        this.emailHostingLocation = sendEmailRequest.getEmailHostingLocation();
+        this.emailURI = sendEmailRequest.getEmailHostingLocation();
         this.emailDownloadPath = sendEmailRequest.getEmailDownloadPath();
         this.attachmentsPaths = sendEmailRequest.getAttachmentsPaths();
     }
