@@ -22,7 +22,7 @@ public class Email {
         this.arrived = new Date();
         this.emailId = sendEmailRequest.getEmailId();
         this.message = sendEmailRequest.getMessage();
-        this.emailURI = sendEmailRequest.getEmailHostingLocation();
+        this.emailURI = sendEmailRequest.getEmailURI();
         this.emailDownloadPath = sendEmailRequest.getEmailDownloadPath();
         this.attachmentsPaths = sendEmailRequest.getAttachmentsPaths();
     }

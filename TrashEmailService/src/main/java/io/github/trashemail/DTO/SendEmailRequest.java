@@ -12,7 +12,7 @@ import java.util.List;
 public class SendEmailRequest {
     private String emailId;
     private String message;
-    private String emailHostingLocation;
+    private String emailURI;
     private String emailDownloadPath;
     private List<String> attachmentsPaths;
 
@@ -20,7 +20,7 @@ public class SendEmailRequest {
         return "SendEmailRequest{" +
                 "emailId='" + emailId + '\'' +
                 ", message='" + message + '\'' +
-                ", emailHostingLocation='" + emailHostingLocation + '\'' +
+                ", emailURI='" + emailURI + '\'' +
                 ", emailDownloadPath='" + emailDownloadPath + '\'' +
                 ", attachmentsPaths=" + attachmentsPaths +
                 '}';
