@@ -1,0 +1,7 @@
+[submodule "TrashEmailFetchMail"]
+	path = TrashEmailFetchMail
+	url = https://github.com/TrashEmail/TrashEmailFetchMail.git
+	branch = master
+[submodule "TrashEmailTelegramConnector"]
+	path = TrashEmailTelegramConnector
+	url = https://github.com/TrashEmail/TrashEmailTelegramConnector.git
