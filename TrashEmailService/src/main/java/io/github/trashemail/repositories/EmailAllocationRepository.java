@@ -16,7 +16,7 @@ public interface EmailAllocationRepository
                                                                   String destination_type);
     List<EmailAllocation> findByEmailIdEndsWith(String domain);
     @Query(
-            value = "SELECT count(user.emailId) FROM User user " +
+            value = "SELECT count(user.emailId) FROM EmailAllocation user " +
                     "WHERE DATE (user.createDateTime) = CURDATE() "
     ) long getEmailIdsCreatedTodayCount();
 
@@ -25,7 +25,7 @@ public interface EmailAllocationRepository
     based approach.
     */
     @Query(
-            value = "SELECT count(user.emailId) FROM User user " +
+            value = "SELECT count(user.emailId) FROM EmailAllocation user " +
                     "WHERE DATE(user.createDateTime) >= :oneWeekOldDate and " +
                     "DATE(user.createDateTime) <= :today " +
                     "GROUP BY DATE(user.createDateTime) " +
