@@ -162,7 +162,7 @@ public class TrashEmailResource {
         */
         for(String connectorURL : trashemailConfig.getConnectorURLs()){
             connectorStats.add(
-                    restTemplate.getForEntity(connectorURL, ConnectorStats.class).getBody()
+                    restTemplate.getForEntity(connectorURL + "/stats/", ConnectorStats.class).getBody()
             );
         }
         trashemailStats.setConnectorStats(connectorStats);
