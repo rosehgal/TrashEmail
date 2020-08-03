@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Random;
+import java.util.*;
 
 
 @RestController
@@ -154,54 +154,46 @@ public class TrashEmailResource {
     @GetMapping(value = "/stats")
     public TrashEmailStats presentDashBoard(){
         TrashEmailStats trashemailStats = new TrashEmailStats();
-//        trashemailStats.setNumberOfUsers(
-//                userRepository.getDistinctChatIdCount()
-//        );
-//        trashemailStats.setNumberOfEmailsRegistered(
-//                userRepository.count()
-//        );
-//
-//
-//        Map<String, Long> domainCount = new HashMap<String, Long>();
-//        for(String domain: emailServerConfig.getHosts()){
-//            Long countForDomain = (
-//                    (Integer) userRepository.findByEmailIdEndsWith(
-//                        domain
-//                    ).size()
-//            ).longValue();
-//
-//            domainCount.put(domain, countForDomain);
-//        }
-//
-//        Calendar calendar = Calendar.getInstance();
-//        Date today = calendar.getTime();
-//
-//        calendar.add(Calendar.DAY_OF_MONTH, -7);
-//        Date sevenDaysBefore = calendar.getTime();
-//
-//        trashemailStats.setEmailIdsCreatedToday(
-//                userRepository.getEmailIdsCreatedTodayCount()
-//        );
-//
-//        trashemailStats.setEmailIdsCreatedInWeek(
-//                userRepository.getEmailIdsCreatedInWeek(
-//                        today,
-//                        sevenDaysBefore
-//                )
-//        );
-//        trashemailStats.setDomainsToNumbers(domainCount);
-//        trashemailStats.setVersion(
-//                trashemailConfig.getVersion()
-//        );
-//        trashemailStats.setNumberOfEmailsProcessed(
-//            emailCounterRepository.count()
-//        );
-//        trashemailStats.setTotalNumberOfUsers(
-//                userRepository.getNumberOfUsers()
-//        );
-//        trashemailStats.setCummulativeEmailsCountPerDay(
-//                userRepository.getCommulativeEmailCounts(PageRequest.of(0, 2))
-//        );
+        trashemailStats.setVersion(trashemailConfig.getVersion());
+        List<ConnectorStats> connectorStats = new ArrayList<>();
+
+        /*
+        Get Stats from each connector
+        */
+        for(String connectorURL : trashemailConfig.getConnectorURLs()){
+            connectorStats.add(
+                    restTemplate.getForEntity(connectorURL, ConnectorStats.class).getBody()
+            );
+        }
+        trashemailStats.setConnectorStats(connectorStats);
+
+        Map<String, Long> domainCount = new HashMap<String, Long>();
+        for(String domain: emailServerConfig.getHosts()){
+            Long countForDomain = (
+                    (Integer) emailAllocationRepository.findByEmailIdEndsWith(domain).size()
+            ).longValue();
+
+            domainCount.put(domain, countForDomain);
+        }
+        trashemailStats.setDomainsToNumbers(domainCount);
+        trashemailStats.setEmailIdsCreatedToday(emailAllocationRepository.getEmailIdsCreatedTodayCount());
+
+        Calendar calendar = Calendar.getInstance();
+        Date today = calendar.getTime();
+        calendar.add(Calendar.DAY_OF_MONTH, -7);
+        Date sevenDaysBefore = calendar.getTime();
+
+        trashemailStats.setEmailIdsCreatedInWeek(
+                emailAllocationRepository.getEmailIdsCreatedInWeek(
+                        today,
+                        sevenDaysBefore
+                )
+        );
+
+        trashemailStats.setNumberOfEmailsProcessed(
+            emailCounterRepository.count()
+        );
+
         return trashemailStats;
     }
 }

@@ -19,4 +19,6 @@ public class TrashEmailStats {
     private String version;
     private Long numberOfEmailsProcessed;
     private Long totalNumberOfUsers;
+
+    private List<ConnectorStats> connectorStats;
 }
