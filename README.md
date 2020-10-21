@@ -23,7 +23,7 @@ TrashEmail is hosted Telegram bot that can save your private email address by of
 - **How can I access my emails?** - If there is an email for you, it will come to telegram :smile: Easy right.
 - **Do I need to setup and remember any password?** - No Sir, that's the trick.
 - **Why am I maintaining and hosting this?** - This is my first such tool for community :smile: I wanted to give something back to community. If you like the idea and wanted to contribute then you can [BuyMeACoffee](https://www.buymeacoffee.com/r0hi7)
-- **How many users are currently using it?** - The information about active registered users and latest version of this service can be found here: https://telegram.trashemail.in/TrashemailSite/
+- **How many users are currently using it?** - The information about active registered users and latest version of this service can be found here: https://trashemail.in
 
 ![Trashemail Dashboard](./trashemail-dashboard.png "Trashemail Dashboard")
 
