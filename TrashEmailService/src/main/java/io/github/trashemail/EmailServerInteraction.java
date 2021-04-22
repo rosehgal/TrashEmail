@@ -73,7 +73,7 @@ public class EmailServerInteraction {
 		HttpEntity<MultiValueMap<String, String>> request =
 				new HttpEntity<MultiValueMap<String, String>>(data, headers);
 
-		RestTemplate restTemplate = new RestTemplate();
+//		RestTemplate restTemplate = new RestTemplate();
 		ResponseEntity response = restTemplate.postForEntity(
 				emailServerConfig.getRemoveUrl(),
 				request,
