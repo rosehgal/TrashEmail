@@ -1,8 +1,12 @@
 package io.github.trashemail;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.trashemail.Configurations.EmailServerConfig;
 import io.github.trashemail.Configurations.TrashEmailConfig;
 import io.github.trashemail.DTO.ConnectorStats;
+import io.github.trashemail.DTO.CreateEmailRequest;
+import io.github.trashemail.DTO.DeleteEmailRequest;
+import io.github.trashemail.DTO.SendEmailRequest;
 import io.github.trashemail.models.EmailAllocation;
 import io.github.trashemail.repositories.EmailAllocationRepository;
 import io.github.trashemail.repositories.EmailCounterRepository;
@@ -12,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
@@ -21,8 +26,10 @@ import java.util.Date;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -70,4 +77,173 @@ class TrashEmailResourceTest {
                .andExpect(status().isOk());
     }
 
+
+    @Test
+    void testSendEmailTargetNotActive() throws Exception {
+
+        doNothing().when(emailCounterRepository).updateCount();
+        when(emailAllocationRepository.findByEmailIdAndIsActiveTrue(anyString())).thenReturn(null);
+
+        SendEmailRequest sendEmailRequest = new SendEmailRequest();
+        sendEmailRequest.setEmailId("emailid");
+        String payload = new ObjectMapper().writeValueAsString(sendEmailRequest);
+
+        mockMvc.perform(post("/sendMail")
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .content(payload))
+               .andDo(print())
+               .andExpect(status().isOk())
+               .andExpect(content().string("Mail target not active"));
+    }
+
+
+    @Test
+    void testSendEmail() throws Exception {
+
+        doNothing().when(emailCounterRepository).updateCount();
+
+        EmailAllocation emailAllocation = new EmailAllocation();
+        emailAllocation.setDestinationType("url");
+        emailAllocation.setDestination("destination");
+
+        when(emailAllocationRepository.findByEmailIdAndIsActiveTrue(anyString())).thenReturn(emailAllocation);
+
+        SendEmailRequest sendEmailRequest = new SendEmailRequest();
+        sendEmailRequest.setEmailId("emailid");
+        String payload = new ObjectMapper().writeValueAsString(sendEmailRequest);
+
+        when(restTemplate.postForEntity(anyString(), any(Object.class), any(Class.class)))
+                .thenReturn(ResponseEntity.ok(""));
+
+
+        mockMvc.perform(post("/sendMail")
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .content(payload))
+               .andDo(print())
+               .andExpect(status().isOk())
+               .andExpect(content().string(""));
+    }
+
+    @Test
+    void testSendEmailTargetTypeEmail() throws Exception {
+
+        doNothing().when(emailCounterRepository).updateCount();
+
+        EmailAllocation emailAllocation = new EmailAllocation();
+        emailAllocation.setDestinationType("email");
+        emailAllocation.setDestination("destination");
+
+        when(emailAllocationRepository.findByEmailIdAndIsActiveTrue(anyString())).thenReturn(emailAllocation);
+
+        SendEmailRequest sendEmailRequest = new SendEmailRequest();
+        sendEmailRequest.setEmailId("emailid");
+        String payload = new ObjectMapper().writeValueAsString(sendEmailRequest);
+
+        when(restTemplate.postForEntity(anyString(), any(Object.class), any(Class.class)))
+                .thenReturn(ResponseEntity.ok(""));
+
+
+        mockMvc.perform(post("/sendMail")
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .content(payload))
+               .andDo(print())
+               .andExpect(status().isOk())
+               .andExpect(content().string("Mail Sent."));
+    }
+
+    @Test
+    void testDeleteEmailIdBadRequest() throws Exception {
+        DeleteEmailRequest deleteEmailRequest = new DeleteEmailRequest();
+        deleteEmailRequest.setEmailId("emailId");
+        String payload = new ObjectMapper().writeValueAsString(deleteEmailRequest);
+
+        when(emailAllocationRepository.findByEmailIdAndIsActiveTrue(anyString())).thenReturn(null);
+
+        mockMvc.perform(post("/delete")
+                       .contentType(MediaType.APPLICATION_JSON_VALUE)
+                       .content(payload))
+               .andDo(print())
+               .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testDeleteEmailId() throws Exception {
+        DeleteEmailRequest deleteEmailRequest = new DeleteEmailRequest();
+        deleteEmailRequest.setEmailId("emailId");
+        String payload = new ObjectMapper().writeValueAsString(deleteEmailRequest);
+        EmailAllocation emailAllocation = new EmailAllocation();
+
+
+        when(emailAllocationRepository.findByEmailIdAndIsActiveTrue(anyString())).thenReturn(emailAllocation);
+        when(emailServerInteraction.deleteEmailId(any(EmailAllocation.class))).thenReturn(true);
+        when(emailAllocationRepository.save(any(EmailAllocation.class))).thenReturn(emailAllocation);
+
+        mockMvc.perform(post("/delete")
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .content(payload))
+               .andDo(print())
+               .andExpect(status().isOk())
+               .andExpect(content().json("{\"emailId\":\"emailId\",\"isDeleted\":true}"));
+    }
+
+    @Test
+    void testCreateEmailBadRequest() throws Exception {
+        CreateEmailRequest createEmailRequest = new CreateEmailRequest();
+        createEmailRequest.setEmailId("emailid");
+        String payload = new ObjectMapper().writeValueAsString(createEmailRequest);
+        when(emailAllocationRepository.findByEmailIdAndIsActiveTrue(anyString())).thenReturn(new EmailAllocation());
+
+        mockMvc.perform(post("/create")
+                       .contentType(MediaType.APPLICATION_JSON_VALUE)
+                       .content(payload))
+               .andDo(print())
+               .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testCreateEmailCreated() throws Exception {
+        CreateEmailRequest createEmailRequest = new CreateEmailRequest();
+        createEmailRequest.setEmailId("emailid");
+        createEmailRequest.setDestination("destination");
+        createEmailRequest.setDestinationType("destinationtype");
+        EmailAllocation emailAllocation = new EmailAllocation();
+        String payload = new ObjectMapper().writeValueAsString(createEmailRequest);
+        when(emailAllocationRepository.findByEmailIdAndIsActiveTrue(anyString())).thenReturn(null);
+        when(emailAllocationRepository.findByEmailIdAndDestinationAndDestinationType(anyString(),
+                                                                                     anyString(),
+                                                                                     anyString())).thenReturn(emailAllocation);
+
+        when(emailServerInteraction.createEmailId(any(EmailAllocation.class))).thenReturn("");
+        when(emailAllocationRepository.save(any(EmailAllocation.class))).thenReturn(emailAllocation);
+
+        mockMvc.perform(post("/create")
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .content(payload))
+               .andDo(print())
+               .andExpect(status().isCreated());
+    }
+
+    @Test
+    void testCreateEmailRandom() throws Exception {
+        CreateEmailRequest createEmailRequest = new CreateEmailRequest();
+        createEmailRequest.setEmailId("emailid");
+        createEmailRequest.setDestination("destination");
+        createEmailRequest.setDestinationType("destinationtype");
+        EmailAllocation emailAllocation = new EmailAllocation();
+        String payload = new ObjectMapper().writeValueAsString(createEmailRequest);
+        when(emailAllocationRepository.findByEmailIdAndIsActiveTrue(anyString())).thenReturn(null);
+        when(emailAllocationRepository.findByEmailIdAndDestinationAndDestinationType(anyString(),
+                                                                                     anyString(),
+                                                                                     anyString())).thenReturn(null);
+
+        when(emailServerConfig.getTargetAlias()).thenReturn(Arrays.asList("Alias"));
+        when(emailServerInteraction.createEmailId(any(EmailAllocation.class))).thenReturn("");
+        when(emailAllocationRepository.save(any(EmailAllocation.class))).thenReturn(emailAllocation);
+
+        mockMvc.perform(post("/create")
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .content(payload))
+               .andDo(print())
+               .andExpect(status().isCreated());
+    }
 }
