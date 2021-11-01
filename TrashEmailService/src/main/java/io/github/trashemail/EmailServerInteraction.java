@@ -23,12 +23,11 @@ public class EmailServerInteraction {
 	@Autowired
 	RestTemplate restTemplate;
 
-	private static final Logger log = LoggerFactory.getLogger(
-			EmailServerInteraction.class);
+	private static final Logger log = LoggerFactory.getLogger(EmailServerInteraction.class);
 
 	public String createEmailId(EmailAllocation emailAllocation)
 	throws HttpClientErrorException, EmailAliasNotCreatedExecption {
-		
+
 		HttpHeaders headers = new HttpHeaders();
 		headers.setBasicAuth(
 			emailServerConfig.getAdminEmail(),
@@ -36,20 +35,19 @@ public class EmailServerInteraction {
 		);
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-		MultiValueMap<String, String> data = new LinkedMultiValueMap<String, String>();
-		
+		MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
+
 		data.add("address", emailAllocation.getEmailId());
 		data.add("forwards_to", emailAllocation.getForwardsTo());
-		
-		HttpEntity<MultiValueMap<String, String>> request =
-				new HttpEntity<MultiValueMap<String, String>>(data, headers);
+
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(data, headers);
 
 		ResponseEntity response = restTemplate.postForEntity(
 			emailServerConfig.getAddUrl(),
 			request, 
 			String.class);
 
-		if(response.getStatusCode() == HttpStatus.OK){
+		if(response.getStatusCode() == HttpStatus.OK) {
 			return "Email ID : *"+emailAllocation.getEmailId()+"* "+
 					"successfully Created :)";
 		}
@@ -66,12 +64,11 @@ public class EmailServerInteraction {
 		);
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-		MultiValueMap<String, String> data = new LinkedMultiValueMap<String, String>();
+		MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
 
 		data.add("address", emailAllocation.getEmailId());
 
-		HttpEntity<MultiValueMap<String, String>> request =
-				new HttpEntity<MultiValueMap<String, String>>(data, headers);
+		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(data, headers);
 
 //		RestTemplate restTemplate = new RestTemplate();
 		ResponseEntity response = restTemplate.postForEntity(
@@ -79,11 +76,11 @@ public class EmailServerInteraction {
 				request,
 				String.class);
 
-		if(response.getStatusCode() == HttpStatus.OK){
+		if (response.getStatusCode() == HttpStatus.OK) {
 			return true;
 		}
 
-		else if(response.getStatusCode() == HttpStatus.BAD_REQUEST){
+		else if (response.getStatusCode() == HttpStatus.BAD_REQUEST) {
 			return false;
 		}
 

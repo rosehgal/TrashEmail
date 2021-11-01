@@ -167,7 +167,7 @@ public class TrashEmailResource {
         }
         trashemailStats.setConnectorStats(connectorStats);
 
-        Map<String, Long> domainCount = new HashMap<String, Long>();
+        Map<String, Long> domainCount = new HashMap<>();
         for(String domain: emailServerConfig.getHosts()){
             Long countForDomain = (
                     (Integer) emailAllocationRepository.findByEmailIdEndsWith(domain).size()
