@@ -54,7 +54,9 @@ public class EmailServerInteraction {
 					"successfully Created :)";
 		}
 
-		log.error(response.getStatusCode().toString() + response.getBody());
+		if (log.isErrorEnabled())
+			log.error("{} {}", response.getStatusCode(), response.getBody());
+
 		throw new EmailAliasNotCreatedExecption(response.getBody().toString());
 	}
 
