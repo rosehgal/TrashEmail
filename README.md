@@ -212,3 +212,8 @@ I have tried to engineer this service to be reliable, in case if you find any is
 ### Credits
 ![TelegramAllTheThings](./telegram-bot-all-the-things.jpg)
 
+
+
+### Infrastructure model
+
+![Insfrastructure model](.infragenie/infrastructure_model.png)
