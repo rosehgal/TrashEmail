@@ -79,6 +79,14 @@ class EmailServerInteractionTests {
         assertThrows(EmailAliasNotCreatedExecption.class, () -> emailServerInteraction.createEmailId(emailAllocation));
     }
 
+    @Test
+    void testCreateEmailNullBodyException() throws EmailAliasNotCreatedExecption {
+        when(emailServerConfig.getAddUrl()).thenReturn("www.addurl.com");
+        when(restTemplate.postForEntity(Mockito.anyString(), any(HttpEntity.class), any(Class.class)))
+                .thenReturn(ResponseEntity.badRequest().body(null));
+
+        assertThrows(EmailAliasNotCreatedExecption.class, () -> emailServerInteraction.createEmailId(emailAllocation));
+    }
 
     @Test
     @DisplayName("Delete email with 200 response")

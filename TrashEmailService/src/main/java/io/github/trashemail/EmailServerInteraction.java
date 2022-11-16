@@ -55,7 +55,7 @@ public class EmailServerInteraction {
 		}
 
 		log.error(response.getStatusCode().toString() + response.getBody());
-		throw new EmailAliasNotCreatedExecption(response.getBody().toString());
+		throw new EmailAliasNotCreatedExecption(String.valueOf(response.getBody()));
 	}
 
 	public boolean deleteEmailId(EmailAllocation emailAllocation) {
